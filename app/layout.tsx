@@ -3,11 +3,16 @@ import "./globals.css";
 
 import {
   ClerkProvider,
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
   // 🛑 Yahan maine imports hataa diye of Signed in etc. from clerk
 } from "@clerk/nextjs";
 import React from "react";
 import { Inter, Space_Grotesk } from "next/font/google";
 import type { Metadata } from "next";
+import { ThemeProvider } from "@/context/ThemeProvider";
 // This is to let typescript know we are working with Metadata
 
 const inter = Inter({
@@ -37,19 +42,28 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider
-      appearance={{
-        elements: {
-          formButtonPrimary: "primary-gradient",
-          footerActionLink: 'primary-text-gradient hover:text-primary-500'
-        }
-      }}
-    >
-      <html lang="en">
-        <body className={`${inter.variable} ${spaceGrotesk.variable}`}>
-          {children}
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <body className={`${inter.variable} ${spaceGrotesk.variable}`}>
+        <ClerkProvider
+          appearance={{
+            elements: {
+              formButtonPrimary: "primary-gradient",
+              footerActionLink: "primary-text-gradient hover:text-primary-500",
+            },
+          }}
+        >
+          <header>
+            <SignedOut>
+              <SignInButton />
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+          </header>
+          <ThemeProvider>{children}</ThemeProvider>
+        </ClerkProvider>
+      </body>
+    </html>
+    // Now all pages will have access to Clerk Provider (signup and signin) and Theme Provider (light and dark mode)
   );
 }

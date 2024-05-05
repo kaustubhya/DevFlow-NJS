@@ -523,3 +523,41 @@ app/sign-in/[[...sign-in]]/page.tsx
 3. Update your environment variables (in .env.local)
 
 4. Do `npm run dev` to test it.
+
+## Using React Context for State Management with Next.js
+
+In next js we try to keep everything, server rendered. We can use context only when we use hooks, but hooks by default are client side which eliminates the possibility of things to be server rendered.
+
+[DOCS](https://vercel.com/guides/react-context-state-management-nextjs)
+
+Context is a feature of React, a popular JavaScript library for building user interfaces, that enables components to share data without passing props down manually at every level of the component tree. This is particularly useful for data that can be considered "global" for a tree of React components, such as user authentication status or theme preferences.
+
+Keep in mind that context providers are typically rendered near the root of an application to share global concerns. However, creating a context at the root of your application in Next.js will cause an error in server components. Let's see how to handle this.
+
+### Rendering Third-Party Context Providers in Server Components
+
+In Next.js, React Server Components don't support creating or consuming context directly. If you try to create a context in a Server Component, it will result in an error. Similarly, rendering a third-party context provider that doesn't have the "use client" directive will also cause an error in Server Components.
+
+Instead, you can create your own Client Component that wraps the third-party provider.
+
+By rendering the providers at the root level, all the components throughout your app will be able to consume the context provided by the third-party libraries.
+
+It's worth noting that you should render providers as deep as possible in the component tree.
+
+We already did something like this in layout.tsx. We wrapped our body and children with clerk provider which allowed us to use clerk provider in our entire next js app.
+
+Steps:
+
+1. Create a Context
+2. Provide a value to that context using Provider.
+
+🛑🛑 ERROR: createContext in a Server Component
+Why This Error Occurred
+You are using createContext in a Server Component but it only works in Client Components.
+
+Possible Ways to Fix It
+Mark the component using createContext as a Client Component by adding 'use client' at the top of the file.
+
+If we use 'use client' and wrap it, will our code become client side? 🛑Not at all!!
+
+Let us create a context for switching theme between light and dark mode, for that, go to context > ThemeProvider.tsx
