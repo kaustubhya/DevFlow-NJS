@@ -603,3 +603,13 @@ Now we work on the Left Side Bar, for that we make the component of LeftSidebar 
 
 🛑🛑 Section 2:
 Now we work on the Right Side Bar, for that we make the component of RightSidebar in (root) > layout file active, then we start working on the components > shared > RightSidebar.tsx.
+
+Now while working on the right side section's HOT QUESTIONS part, we will later apply a recommendations algorithm which will take us to the asked question when we click on it directly.
+
+For now, we will just use a piece of text to map over it and see if it is working in the front end part or not.
+
+Now for Popular tags, we see that these tags are used in many parts, so for that, we will make a new file:
+devflow > components > shared > RenderTag.tsx
+
+Now for tags in Render Tags page, we will use Badge component for the layout.
+🛑🛑 // https://ui.shadcn.com/docs/components/badge
