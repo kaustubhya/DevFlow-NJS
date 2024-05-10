@@ -75,5 +75,3 @@ module.exports = {
   },
   plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 };
-
-// Install these in terminal to run code: npm install @tailwindcss/typography tailwindcss-animate

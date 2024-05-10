@@ -3,10 +3,6 @@ import "./globals.css";
 
 import {
   ClerkProvider,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
   // 🛑 Yahan maine imports hataa diye of Signed in etc. from clerk
 } from "@clerk/nextjs";
 import React from "react";
@@ -52,14 +48,6 @@ export default function RootLayout({
             },
           }}
         >
-          <header>
-            <SignedOut>
-              <SignInButton />
-            </SignedOut>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
-          </header>
           <ThemeProvider>{children}</ThemeProvider>
         </ClerkProvider>
       </body>

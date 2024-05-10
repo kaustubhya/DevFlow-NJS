@@ -561,3 +561,45 @@ Mark the component using createContext as a Client Component by adding 'use clie
 If we use 'use client' and wrap it, will our code become client side? 🛑Not at all!!
 
 Let us create a context for switching theme between light and dark mode, for that, go to context > ThemeProvider.tsx
+
+🛑🛑🛑 NAVBAR
+
+Now for a navbar, we want it in the root route group and not in the auth route group as we do not want the navbar in signin and signup pages. Hence we create a new layout.tsx for navbar inside (root)
+
+Now in components folder, we have a shared folder, this will store components which will appear on all pages like navbar.
+
+Import it then in the layout.tsx of (root).
+
+🛑🛑 [Installing ShadCn Ui:](https://ui.shadcn.com/docs/installation/next)
+
+WE have installed Button and a menubar from ShadCN.
+
+Now working on Theme.tsx in components > shared > navbar
+
+Now to work over things like light, dark and system mode in theme change menu, we will loop through the items in this menu.
+
+Now to avoid working and writing that piece of code again and again, we can create a constants folder and write our code (code which we will use time and again) there.
+
+Now we will work on the navbar in mobile mode which will look a bit different with a hamburger menu.
+
+🛑🛑 For this: Create a page MobileNav.tsx inside components > shared > navbar
+
+To make this mobile nav, we will use a "SHEET" from ShadCN.
+
+It is a slider menu which appears from the side when we click on the hamburger icon.
+
+[SHEETS](https://ui.shadcn.com/docs/components/sheet)
+
+After working on MobileNav, we are working on NavContent function. This will allow us to make the buttons and links to different pages in the Mobile Navbar (which slides in from the left via sheets).
+
+After doing Mobile Navbar, we are implementing Global Search.
+For this we will create a new Search Folder inside shared folder. This will have all the shared components that we need.
+Inside that search folder, make there a "GlobalSearch.tsx" file
+
+🛑🛑🛑🛑 For SVG Icons: https://flowbite.com/icons/
+
+🛑🛑 Section 1:
+Now we work on the Left Side Bar, for that we make the component of LeftSidebar in (root) > layout file active, then we start working on the components > shared > LeftSidebar.tsx.
+
+🛑🛑 Section 2:
+Now we work on the Right Side Bar, for that we make the component of RightSidebar in (root) > layout file active, then we start working on the components > shared > RightSidebar.tsx.

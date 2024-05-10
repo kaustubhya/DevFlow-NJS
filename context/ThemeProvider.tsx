@@ -27,12 +27,19 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // This state can be light or dark
 
   const handleThemeChange = () => {
-    if (mode === "dark") {
-      setMode("light");
-      document.documentElement.classList.add("light");
-    } else {
+    if (
+      localStorage.theme === "dark" ||
+      (!("theme" in localStorage) &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
+      // 🛑🛑🛑🛑🛑 This means if local storage theme is dark or if theme does not exist in localStorage and we figure if the user's operating system prefers dark mode or not (using windows.matchmedia().matches)
       setMode("dark");
       document.documentElement.classList.add("dark");
+      // If the if case is true then we set to dark mode and add it to the classList of the browser
+    } else {
+      setMode("light");
+      document.documentElement.classList.remove("dark");
+      // If the if case is false then we set to light mode and remove it from the classList of the browser
     }
   };
 
@@ -40,7 +47,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     handleThemeChange();
   }, [mode]);
+
   // Call handleThemeChange(); every time mode in dependency changes
+
+  console.log("MODE: ", mode);
 
   // Every provider has to return something, generally they return a context
   return (
