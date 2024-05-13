@@ -613,3 +613,45 @@ devflow > components > shared > RenderTag.tsx
 
 Now for tags in Render Tags page, we will use Badge component for the layout.
 🛑🛑 // https://ui.shadcn.com/docs/components/badge
+
+🛑🛑 Now we will create our local dearch bar component, for that we will make this following file: components > shared > search > LocalSearchbar.tsx.
+
+Then activate it as a component in: app > (root) > (home) > page.tsx
+
+🛑🛑 Now we will create our filter component, for that we will make this following file: components > shared > Filter.tsx.
+
+Then activate it as a component in: app > (root) > (home) > page.tsx
+
+Now for filters, we will need another Shadcn component, here we have taken the help of "Select"
+
+[Select Shadcn Docs](https://ui.shadcn.com/docs/components/select)
+
+Now for the Home Page Filters in Tag form, create a new component in: components > home > HomeFilters.tsx.
+
+Also call it in app -> (root) -> (home) -> page.tsx in Home() function.
+
+Now we will start making the Home Page Card Components in (root) -> (home) -> page.tsx in Home() function, below HomeFilters component.
+
+Now first part in the Question Card is making the NoResult Component.
+For that, let us make the following: components > shared > NoResult.tsx
+
+and import it in app > (root) > (home) > page.tsx in Home()
+
+Now we start making the QuestionCard. For that we will first make a cards folder in components > cards > QuestionCard.tsx
+
+and import it in app > (root) > (home) > page.tsx in Home()
+
+Now inside the QuestionCard, we see a format where we have image on the left and text on the right, like for author, like , answers and views. These are called "metrics". We make these as re-usable components.
+
+Let us do the following: components > shared > Metric.tsx
+
+and import it in components > cards > QuestionCard.tsx in QuestionCard().
+
+🛑🛑🛑 Inside QuestionCards.tsx Converting the long string time stamp into something nice and readible
+🛑🛑 We can create a new utility function and use it across different places go to lib > utils.tsx
+
+Now say in views or answers or other things, say we have a large number like 110000000, this will disorient our card and we will not be able to see things clearly.
+
+For this, let us try to convert 1100000000 to 1.1 Billion or B such format.
+
+For this we will make another utility function: lib > utils.ts
