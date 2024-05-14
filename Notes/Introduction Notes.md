@@ -655,3 +655,61 @@ Now say in views or answers or other things, say we have a large number like 110
 For this, let us try to convert 1100000000 to 1.1 Billion or B such format.
 
 For this we will make another utility function: lib > utils.ts
+
+🛑🛑 Now we have started working on Ask a Question Page, for that, we will go to app > (root) > ask-question > page.tsx > Page
+
+Now here we will create our Question Component
+
+components > forms > Question.tsx > Question()
+
+and import it in app > (root) > ask-question > page.tsx > Page
+
+We will first create a form, for that we will import the form component from shadcn UI.
+
+https://ui.shadcn.com/docs/components/form
+
+Here we see that though shadcn has its own components for creating forms, it uses React Hook Form and Zod for creating forms.
+
+Steps to create a form:
+
+1. Install the form component from shadcn ui
+2. Create a form schema i.e. defining the shape of our form using "zod"
+
+Zod - TypeScript-first schema validation with static type inference
+
+Zod ensures that the type of data that we are passing in the form is exactly as we have declared it.
+
+3. Define the useForm hook from React Hook Form to create a form.
+
+4. Building a form
+
+Done, we have made a simple form with username and submit button.
+This all is in the form schema.
+
+But we need more things in our formSchema i.e. modify our formSchema, for this, we have to take it to 🛑lib > validations.ts 🛑
+
+So copy the form schema and paste it there.
+
+Now if we want to have a special type of validation, we can find built-in validations in zod.
+
+For that go to [Zod Documentation](https://zod.dev/?id=strings)
+
+We can also provide special and customized error messages when we give these validations.
+
+Let us first work on validations.tsx
+
+After working on validations and Question.tsx, and making the form and fields of all three and finishing the first form.
+
+Let us now work on the question description field. For that, we will use the tiny mce editor which is a great what you see is what you get editor.
+
+So first import the tiny mce editor
+
+[Editor Docs](https://www.tiny.cloud/docs/tinymce/latest/react-cloud/)
+
+Then we import the useRef and Editor in components > forms > Question.tsx.
+
+Finally insert the editor component inside the form control tag in the second descriptive field.
+
+Then we work with the Tags in the same Page.
+
+Finally we work on the 'onSubmit' of the form.
