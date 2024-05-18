@@ -713,3 +713,128 @@ Finally insert the editor component inside the form control tag in the second de
 Then we work with the Tags in the same Page.
 
 Finally we work on the 'onSubmit' of the form.
+
+🛑🛑 Developing Backend
+In components > forms > Question.tsx > Question() > onSubmit() inside try catch
+
+## Next.js server actions
+
+[Docs](https://makerkit.dev/blog/tutorials/nextjs-server-actions)
+
+Next.js Server actions are a new feature introduced in Next.js 13 that allows us to run server code without having to create an API endpoint.
+
+Server Actions are functions that run on the server, but that we can call from the client, just like a normal function. This allows us to run code on the server without creating an API end point. This is a game changer.
+
+![Diagram Image (React Way)](/devflow/Notes/images/React-way.jpeg)
+
+![Diagram Image - Next Way](/devflow/Notes/images/Next-way.jpeg)
+
+### What can we do in Next.js Server Actions
+
+- Writing to a database: We can write to a database directly from the client without creating an API endpoint.
+  We just define our logic in the server Action.
+
+- Server Logic: We can execute any server related business logic like sending emails, creating files etc.
+
+- Calling External APIs - We can call the external APIs directly from the server actions without having to create an API Endpoint.
+
+In short, we can do anything we want to do on the server without having to create an API Endpoint.
+
+### Pros of using Next.js
+
+There are a few pros to using Next.js Server Actions:
+
+1. No need to create an API endpoint: you can run server code without having to create an API endpoint.
+
+2. Jumping to the definition: you can jump to the definition of a server action just by clicking on it in your code editor, without the need of searching for it in your codebase.
+
+3. Type safety: you can use TypeScript to define the arguments and return value of your server actions, and Next.js will automatically validate them for you.
+
+4. Less code: you can write less code, as you need a lot less boilerplate to run server code - you can just define a function and its parameters - and then call it from the client.
+
+### Defining Server Actions
+
+🛑🛑 Before Next 14
+
+in next.config.js file:
+
+```
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  experimental: {
+    serverActions: true,
+  };
+}
+
+  module.exports = nextConfig;
+```
+
+🛑🛑🛑 Next 14
+
+in next.config.mjs file:
+
+```
+/** @type {import('next').NextConfig} */
+const nextConfig = {};
+
+module.exports = nextConfig;
+
+```
+
+#### Defining a Server Action in a Server Component
+
+If you are defining a server action in a server component, the only thing you need to do is to define a function with the `use server` keyword at the top.
+
+For example, the below is a valid server action:
+
+```
+async function myActionFunction() {
+  'use server';
+
+  // do something
+}
+```
+
+Very important: server actions functions should have serializable arguments and a serializable return value based on the React Server Components protocol. This is because the function's response will be serialized and sent to the client.
+
+![Final Diagram](/devflow/Notes//images/Next-final.jpeg)
+
+To execute this in devflow go to:
+
+lib > actions > question.action.ts
+
+Also add the below code in next.config.js > nextConfig
+
+🛑 To create our database, we make a file:
+
+lib > mongoose.ts
+
+Mongoose is just an elegant mongodb object modelling for node.js.
+
+It allows us to create models more quickly in our mongodb database.
+
+Mongo DB on the other hand is just a database for our documents.
+
+In MongoDB we create a project, create a cluster, add an IP address, (user name and password in .env.local) and finally connect it using "DRIVERS" i.e. Node.JS
+
+Now make sure node is installed
+
+Run this in terminal: `npm install mongodb`
+
+Finally copy this string in our devflow code to make our connection:
+
+`mongodb+srv://kaustubhyaksd:<password>@cluster0.6zyruyj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
+
+(Update the (password) that we saved in .env.local and put it above)
+
+Now go here: https://cloud.mongodb.com/v2/6647c69b0cf72650c25883ac#/clusters (Deployment > Database) and see if our clusters are connected or not.
+
+Go to .env.local for that.
+
+Let us resume our work from mongoose.ts
+
+🛑 Let us now focus on creating the question model, for that we will go to database > question.model.ts
+
+🛑 Let us now focus on creating the user model, for that we will go to database > user.model.ts
+
+🛑 Let us now focus on creating the tag model, for that we will go to database > tag.model.ts

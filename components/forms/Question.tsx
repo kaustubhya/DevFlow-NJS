@@ -31,6 +31,7 @@ import React, { useRef, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
+import { createQuestion } from "@/lib/actions/question.action";
 
 const type: any = "create"; // form type (create or edit)
 
@@ -55,7 +56,7 @@ const Question = () => {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof QuestionsSchema>) {
+  async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
     // This function takes in all the values from the forms and sends it to the backend
     setIsSubmitting(true); // is prevents us from pressing the button twice, which causes chaos in the database which is good
 
@@ -65,6 +66,13 @@ const Question = () => {
       // For that we will make an async call to our API
       // That call contains all of our form data
       // Then we will navigate to our home page to see the list of all visible questions
+      // We will use Next.js server actions for this (see notes)
+
+      // After writing MongoDB code and installing and connecting to Mongo DB database, we trigger the async function of question.action.ts (import it before executing code)
+      await createQuestion({});
+
+      // Now when we submit the form in Question.tsx (client side), it runs the quesiton action on question.action.ts (server side), and it calls connect to db in mongoose.ts (database) (set params in question.action.ts to type : any)
+      // These working of 3 files make server actions so great in Next.js (see diagrams)
     } catch (error) {
     } finally {
       // it always runs on any condition - true or false
@@ -171,6 +179,8 @@ const Question = () => {
                     // @ts-ignore -> Though code is giving an error, ignore it as tiny needs this code bit to work
                     editorRef.current = editor;
                   }}
+                  onBlur={field.onBlur} // This onBlur runs once we exit the editor and field.onBlur saves the values once we exit
+                  onEditorChange={(content) => field.onChange(content)} // get the content from the editor and do field.onChange(content)
                   initialValue=""
                   init={{
                     height: 350,
