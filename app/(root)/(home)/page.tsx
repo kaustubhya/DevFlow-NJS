@@ -6,45 +6,17 @@ import Link from "next/link";
 import HomeFilters from "@/components/home/HomeFilters";
 import NoResult from "@/components/shared/NoResult";
 import QuestionCard from "@/components/cards/QuestionCard";
+import { getQuestions } from "@/lib/actions/question.action";
 
-const questions = [
-  {
-    _id: "1",
-    title: "Cascading Deletes in SQL Alchemy?",
-    tags: [
-      { _id: "1", name: "python" },
-      { _id: "2", name: "sql" },
-    ],
-    author: {
-      _id: "author1_id",
-      name: "John Doe",
-      picture: "author1_picture_url",
-    },
-    upvotes: 112345,
-    views: 10000000,
-    answers: [],
-    createdAt: new Date("2023-09-01T12:00:00.000Z"),
-  },
-  {
-    _id: "2",
-    title: "How to differentiate between flex and grid?",
-    tags: [
-      { _id: "3", name: "css" },
-      { _id: "4", name: "html" },
-    ],
-    author: {
-      _id: "author2_id",
-      name: "Langley Mensch",
-      picture: "author2_picture_url",
-    },
-    upvotes: 17810,
-    views: 144245,
-    answers: [],
-    createdAt: new Date("2023-12-27T07:00:00.000Z"),
-  },
-];
+export default async function Home() {
+  // fetching real questions from the database
+  // let us first create the server action for this and then come back
 
-export default function Home() {
+  // we came back after make getQuestions method in question.action.ts
+  const result = await getQuestions({});
+
+  // console.log(result.questions);
+
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
@@ -87,8 +59,8 @@ export default function Home() {
       {/* Wrapping Div */}
       <div className="mt-10 flex w-full flex-col gap-6">
         {/* Looping through questions (array of objects at the start ↑) */}
-        {questions.length > 0 ? (
-          questions.map((question) => (
+        {result.questions.length > 0 ? (
+          result.questions.map((question) => (
             <QuestionCard
               key={question._id}
               // Since the key is not getting passed, let us pass the IDs too!

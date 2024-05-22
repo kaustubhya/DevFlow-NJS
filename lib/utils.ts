@@ -58,7 +58,7 @@ eg. 2 days ago ; 5 minutes ago; 6 hours ago. Something like this.
 
 // Utility function for views, votes and answers in a readible format
 
-export const formatNumber = (num: number): string => {
+export const formatAndDivideNumber = (num: number): string => {
   if (num >= 1000000000) {
     // Billions
     const billionValue = (num / 1000000000).toFixed(1);

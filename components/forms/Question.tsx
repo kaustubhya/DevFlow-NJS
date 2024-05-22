@@ -5,7 +5,7 @@
 //  Now we use the useForm hook from react-hook-form to create a form.
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import * as z from "zod";
 
 // Now to build our form, import these below
 import { Button } from "@/components/ui/button";
@@ -32,15 +32,27 @@ import { Editor } from "@tinymce/tinymce-react";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
 import { createQuestion } from "@/lib/actions/question.action";
+import { useRouter, usePathname } from "next/navigation";
 
 const type: any = "create"; // form type (create or edit)
 
-const Question = () => {
+// Prop from ask a question > page.tsx
+
+interface Props {
+  mongoUserId: string;
+  // now go to author in createQuestion below ↓ to use it
+}
+
+const Question = ({ mongoUserId }: Props) => {
   // For the tiny mce editor, we will establish a reference, this will make sure that we will not take values after every key stroke or key input, it takes values at once together.
   const editorRef = useRef(null);
 
   // for form submission
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // for router
+  const router = useRouter();
+  const pathname = usePathname(); // this tells us on which pathname we are on right now
 
   // We will pull the below 2 functions into our questions component which is already existing
 
@@ -69,10 +81,25 @@ const Question = () => {
       // We will use Next.js server actions for this (see notes)
 
       // After writing MongoDB code and installing and connecting to Mongo DB database, we trigger the async function of question.action.ts (import it before executing code)
-      await createQuestion({});
+
+      // 🛑 After doing all of the backend stuff and inserting the first user in the database, we will now proceed
+      await createQuestion({
+        title: values.title,
+        content: values.explaination,
+        tags: values.tags,
+
+        // author is tricky as we have to request the database for this user
+        // Let us create a user action for this and we will come back here (notes)
+        author: JSON.parse(mongoUserId),
+        // Coming back after doing work in page.tsx and mongoUserId prop above
+        path: pathname,
+      }); // Passed all things to create a question
 
       // Now when we submit the form in Question.tsx (client side), it runs the quesiton action on question.action.ts (server side), and it calls connect to db in mongoose.ts (database) (set params in question.action.ts to type : any)
       // These working of 3 files make server actions so great in Next.js (see diagrams)
+
+      // Let us go to home page now
+      router.push("/");
     } catch (error) {
     } finally {
       // it always runs on any condition - true or false
@@ -97,7 +124,7 @@ const Question = () => {
         if (tagValue.length > 15) {
           return form.setError("tags", {
             type: "required",
-            message: "Tag must be less than 15 characters!",
+            message: "Tag must be less than 15 characters.",
             // Specifying tag chars limit
           });
         }
@@ -110,11 +137,11 @@ const Question = () => {
           form.setValue("tags", [...field.value, tagValue]); // adding the value in the array with spread operator
           tagInput.value = ""; // Clearing the input field
           form.clearErrors("tags");
-        } else {
-          form.trigger(); // activate the form action
         }
-        // This if-else code block adds a new tag to a form field if it's not already present, clears the input field, and clears any errors associated with the field. If the tag is already present, it triggers an action associated with the form.
+      } else {
+        form.trigger(); // activate the form action
       }
+      // This if-else code block adds a new tag to a form field if it's not already present, clears the input field, and clears any errors associated with the field. If the tag is already present, it triggers an action associated with the form.
       // Go to UI code
     }
   };
@@ -143,6 +170,7 @@ const Question = () => {
           render={({ field }) => (
             <FormItem className="flex w-full flex-col">
               <FormLabel className="paragraph-semibold text-dark400_light800">
+                {" "}
                 Question Title <span className="text-primary-500">*</span>
               </FormLabel>
               <FormControl className="mt-3.5">
@@ -168,7 +196,7 @@ const Question = () => {
           render={({ field }) => (
             <FormItem className="flex w-full flex-col gap-3">
               <FormLabel className="paragraph-semibold text-dark400_light800">
-                Detailed Explaination of your problem{" "}
+                Detailed Explaination of your problem
                 <span className="text-primary-500">*</span>
               </FormLabel>
               <FormControl className="mt-3.5">
@@ -208,7 +236,7 @@ const Question = () => {
                     ],
                     toolbar:
                       "undo redo | blocks | " +
-                      "codesample bold italic forecolor | alignleft aligncenter " +
+                      "codesample | bold italic forecolor | alignleft aligncenter |" +
                       "alignright alignjustify | bullist numlist outdent indent | ",
                     content_style: "body { font-family:Inter; font-size:16px }",
                   }}
@@ -216,7 +244,7 @@ const Question = () => {
               </FormControl>
               <FormDescription className="body-regular text-light-500 mt-2.5">
                 Introduce the problem and expand on what you&apos;ve put in the
-                title. It should be atleast a minimum of 20 characters.
+                title. It should be atleast a minimum of 100 characters.
               </FormDescription>
               <FormMessage className="text-red-500" />
             </FormItem>
@@ -269,9 +297,8 @@ const Question = () => {
                 </>
               </FormControl>
               <FormDescription className="body-regular text-light-500 mt-2.5">
-                Add up to 3 tags to describe what your question is about and
-                which field it&apos;s related to. You need to press ENTER to add
-                a tag.
+                Add up to 3 tags to describe which field you&apos;re question is
+                related to. You need to press ENTER to add a tag.
               </FormDescription>
               <FormMessage className="text-red-500" />
             </FormItem>

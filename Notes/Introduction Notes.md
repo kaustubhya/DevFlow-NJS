@@ -838,3 +838,78 @@ Let us resume our work from mongoose.ts
 🛑 Let us now focus on creating the user model, for that we will go to database > user.model.ts
 
 🛑 Let us now focus on creating the tag model, for that we will go to database > tag.model.ts
+
+🛑🛑 We will now create some question actions, for that we need to go to lib > actions > question.action.ts
+
+To see the Relation between Question and Tag see here (how we connected and established a relation between Question and Tag in question.action.ts)
+![Image](/devflow//Notes//images//Question-and-Tag-Relation.jpeg)
+
+After linking the question with the tags, let us create a user into the database, for that go to MongoDB Atlas > Database > Cluster0 > Collections > Add my own data give a DataBase name it.
+
+🛑 The name of db created should be the same as mentioned in our mongoose.ts file.
+
+Give collection name "users" and create it.
+
+Now after the database is created, insert a document (on the right hand side).
+
+There we will insert the dummy user object we created (in JSON via ChatGpt) by referring to the user.model.ts interface IUser Interface.
+
+Here is the JSON of the dummy object to be inserted
+
+```json
+{
+  "_id": { "$oid": "664bf5d74d2919d6d73c40b6" },
+  "clerkId": "clerk12345",
+  "name": "John Doe",
+  "username": "johndoe",
+  "email": "johndoe@example.com",
+  "password": "supersecurepassword",
+  "bio": "Full-stack developer with a passion for open-source projects.",
+  "picture": "https://example.com/pictures/johndoe.jpg",
+  "location": "San Francisco, CA",
+  "portfolioWebsite": "https://johndoe.dev",
+  "reputation": 1500,
+  "saved": ["60c72b2f9b1d8b3f4c8b4567", "60c72b2f9b1d8b3f4c8b4568"],
+  "joinedAt": "2023-01-15T10:00:00.000Z"
+}
+```
+
+Now we have our first user in the database.
+
+🛑🛑 From here, now we can go to components > forms > Question.tsx > Question > onSubmit() > await createQuestion({});
+
+Now to proceed with author, we need to create a user action for this author,
+
+Go to lib > actions > user.action.ts
+
+Now go to the page which calls the question page ie app > root > ask-question > page.tsx
+
+🛑🛑 To fetch our questions right here, let us first find where we're displaying this fake data. It is at app > (root) > (home) > page.tsx
+
+So go just below Home() and fetch real questions from there.
+
+But first, let us first create the server action for this and then come back to Home().
+
+So go to lib > actions > question.action.ts.
+
+🛑 One important note here is, for every action, we have to export an async function, pass params as props and make their interfaces.
+
+So to save time, let us make this all at once in lib > actions > shared.types.d.ts
+
+d.ts -> this provides the typescript information about an API that is written in JavaScript.
+
+So let us go there.
+
+After filling that file, we go to question.action.ts, import getQuestions from shared.types.d.ts and work on it.
+
+Also to make the new questions appear on top, we use .sort({ createdAt: -1 })
+
+Also we needed to reload the window to make the new questions appear, to prevent this, we used `revalidatePath()`. Now we can see the newer questions at top without the need to reload.
+
+`revalidatePath()` allows us to purge cached data on demand for a specific path.
+
+use the pathName with this.
+
+Now for just displaying a question, we created question, got questions, created models of question, user, tag, connected to databases, used server actions and so much.
+
+Next we will make the users from our clerk database, be connected to and visible in our mongodb database and not the dummy user.

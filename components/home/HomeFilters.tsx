@@ -5,7 +5,7 @@ import React from "react";
 import { Button } from "../ui/button";
 
 const HomeFilters = () => {
-  const active = "newest";
+  const active = "frequent";
   // This class tells us wich tag button is currently active
 
   return (

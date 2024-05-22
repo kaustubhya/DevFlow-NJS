@@ -2,7 +2,7 @@ import Link from "next/link";
 import React from "react";
 import RenderTag from "../shared/RenderTag";
 import Metric from "../shared/Metric";
-import { formatNumber, getTimestamp } from "@/lib/utils";
+import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
 
 interface QuestionProps {
   _id: string;
@@ -30,9 +30,11 @@ const QuestionCard = ({
   author,
   upvotes,
   views,
-  answers,
+  answers = [],
   createdAt,
 }: QuestionProps) => {
+  // const showActionButtons = clerkId && clerkId === author.clerkId;
+
   return (
     <div className="card-wrapper rounded-[10px] p-9 sm:px-11">
       <div className="flex flex-col-reverse items-start justify-between gap-5 sm:flex-row">
@@ -80,10 +82,11 @@ const QuestionCard = ({
           textStyles="body-medium text-dark400_light700"
         />
 
+        {/* <div className="flex items-center gap-3 max-sm:flex-wrap max-sm:justify-start"> */}
         <Metric
           imgUrl="/assets/icons/like.svg"
           alt="Upvotes"
-          value={formatNumber(upvotes)}
+          value={formatAndDivideNumber(upvotes)}
           title=" Votes" // give spaces here
           textStyles="small-medium text-dark400_light800"
         />
@@ -91,7 +94,7 @@ const QuestionCard = ({
         <Metric
           imgUrl="/assets/icons/message.svg"
           alt="message"
-          value={formatNumber(answers.length)}
+          value={formatAndDivideNumber(answers.length)}
           title=" Answers" // give spaces here
           textStyles="small-medium text-dark400_light800"
         />
@@ -99,10 +102,11 @@ const QuestionCard = ({
         <Metric
           imgUrl="/assets/icons/eye.svg"
           alt="eye"
-          value={formatNumber(views)}
+          value={formatAndDivideNumber(views)}
           title=" Views" // give spaces here
           textStyles="small-medium text-dark400_light800"
         />
+        {/* </div> */}
       </div>
     </div>
   );
