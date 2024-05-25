@@ -962,13 +962,13 @@ To create a new user, go to lib > actions > user.action.ts
 - push a new commit inside the 026_user_creation branch
 
 When the site is deployed, you will visit to your new site,
-https://dev-flow-ksd-git-026webhooks-creating-user-kaustubhyas-projects.vercel.app/
+https://dev-flow-cm7z4j4r7-kaustubhya-s-team.vercel.app
 
 Also I copied the above URL and pasted it in TinyMCE's website where I can allow the available list of URLs that can show my editor. Otherwise the editor would have been in read only mode.
 
 Now go to clerk dashboard > webhooks > add endpoint url
 
-Add this url: https://dev-flow-ksd-git-026webhooks-creating-user-kaustubhyas-projects.vercel.app/api/webhook
+Add this url: https://dev-flow-cm7z4j4r7-kaustubhya-s-team.vercel.app/api/webhook
 
 Click the user updated, user created and user deleted boxes
 
@@ -987,3 +987,21 @@ https://vercel.com/kaustubhyas-projects/dev-flow-ksd/logs?slug=app-future&slug=e
 We have to add the webhook signup key from our .env.local to vercel > settings > environment variables
 
 Go to deployments > ... (on right side end of our project) > Re deploy
+
+Test the webhooks either in clerk dashboard, or by making changes in localhost and seeing the vercel logs or clerk messages.
+
+IT TOOK ME 12 HOURS TO RESOLVE THIS 😭😭😭😭😭
+
+Finally, we see our updated clerk user id in our mongo db database
+
+Now let us go to app > root > ask question > page.tsx
+
+Remove the fake user and comment out the userId from auth, also import auth
+
+🛑🛑 Now to fix the small profile photo that comes before the user in the question card, for that do the following:
+
+- in components > cards > questioncard.tsx
+  change the metric tag of user, use this code:
+  `imgUrl={author.picture}`
+  - we get an error saying the image is being served by clerk.
+  - for that go to next.config.mjs

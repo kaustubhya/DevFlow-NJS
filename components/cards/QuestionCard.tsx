@@ -73,7 +73,7 @@ const QuestionCard = ({
         {/* Import from Metric.tsx */}
 
         <Metric
-          imgUrl="/assets/icons/avatar.svg"
+          imgUrl={author.picture}
           alt="user"
           value={author.name}
           title={` | asked ${getTimestamp(createdAt)}`} // give spaces here and use the utility function from lib > utils.ts
