@@ -28,13 +28,13 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 // Define public routes
 const isPublicRoute = createRouteMatcher([
   "/",
+  "/api/webhook", // This should be public as per your earlier configuration
   "/question/:id",
   "/tags",
   "/tags/:id",
   "/profile/:id",
   "/community",
   "/jobs",
-  "/api/webhook", // This should be public as per your earlier configuration
 ]);
 
 // Define ignored routes
