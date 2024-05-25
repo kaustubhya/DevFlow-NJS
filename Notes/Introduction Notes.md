@@ -913,3 +913,43 @@ use the pathName with this.
 Now for just displaying a question, we created question, got questions, created models of question, user, tag, connected to databases, used server actions and so much.
 
 Next we will make the users from our clerk database, be connected to and visible in our mongodb database and not the dummy user.
+
+🛑🛑 Till now we have been working with 2 different databases:
+
+- Clerk: This was handling our user info and authentication
+- MongoDB: Handling other things
+
+we will connect these 2 databases using WEBHOOKS.
+
+🛑 Webhooks are like a phone call or a message that a website or an app makes to another website or app when something important happens.
+
+Working Process:
+
+1. An Event is Triggered (like user signing in, signing out, deleting his account etc.)
+
+2. We get a notification (in this case, we get a request with a payload)
+
+3. Event processing - This connection between 2 databases allows the mongo db to update the changes whenever it gets a notification from Clerk regarding an event happening.
+
+We set up a webhook, listen to an event and take action regarding it once. Then it will happen automatically as the 2 databases will always be in sync.
+
+If we go to [clerk docs](https://clerk.com/docs/integrations/webhooks/overview), Clerk webhooks allow you to receive event notifications from Clerk, such as when a user is created or updated. When an event occurs, Clerk will send a `POST` request to your webhook endpoint configured for the event type. You can then use the information from the webhook's request payload to trigger actions in your app, such as sending a notification or updating a database.
+
+Clerk uses `Svix` to send our webhooks. This ensures security and authenticity of the incoming webhook requests. This makes sure that webhooks are coming in from the clerk system and are not tampered during transit. This helps us secure the user data.
+
+We want to focus on the following webhooks:
+
+- email.created
+- user.created
+- user.updated
+- user.deleted
+
+🛑🛑 First we install svix do: `npm install svix`
+
+Next go to app > api > webhook > route.ts
+
+To see the USER details when user is created go here: (C:\Next Adrian\devflow\node_modules\@clerk\backend\dist\api\resources\JSON.d.ts)
+
+Now we will create a new user,
+
+To create a new user, go to lib > actions > user.action.ts
