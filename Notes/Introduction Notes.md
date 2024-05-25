@@ -977,3 +977,13 @@ Click create.
 Now we get a signing secret, copy it and paste it in .env.local
 
 Now to test if the webhook is working or not, go to middleware.ts and add the webhook route
+
+🛑🛑 If something is broken with the frontend, we can go to inspect > and see the errors in the console.
+
+🛑🛑 If something is broken with the backend, go to vercel > deployed project's logs and see the errors there.
+
+https://vercel.com/kaustubhyas-projects/dev-flow-ksd/logs?slug=app-future&slug=en-US&slug=kaustubhyas-projects&slug=dev-flow-ksd&slug=logs&page=1&timeline=past30Minutes&startDate=1716606836655&endDate=1716608636655&selectedLogId=1716608636655863665589100000&selectedLogTimestamp=1716608636655&forceEndDate=1716608636655
+
+We have to add the webhook signup key from our .env.local to vercel > settings > environment variables
+
+Go to deployments > ... (on right side end of our project) > Re deploy
