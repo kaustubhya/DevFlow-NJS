@@ -7,7 +7,6 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
-  //   TODO: Add your webhook secret to your .env.local
   // TODO DONE!! ✅. Done After Deploying App and Making an endpoint URL (see notes)
   const WEBHOOK_SECRET = process.env.NEXT_CLERK_WEBHOOK_SECRET;
 
@@ -47,7 +46,7 @@ export async function POST(req: Request) {
       "svix-signature": svix_signature,
     }) as WebhookEvent;
   } catch (err) {
-    console.error("Error- verifying webhook:", err);
+    console.error("Error verifying webhook:", err);
     return new Response("Error occured", {
       status: 400,
     });
@@ -114,8 +113,8 @@ export async function POST(req: Request) {
       clerkId: id!,
     });
 
-    return NextResponse.json({ messagr: "OK", user: deletedUser });
+    return NextResponse.json({ message: "OK", user: deletedUser });
   }
 
-  return new Response("", { status: 200 });
+  return new Response("", { status: 201 });
 }
