@@ -6,6 +6,7 @@ import {
   // 🛑 Yahan maine imports hataa diye of Signed in etc. from clerk
 } from "@clerk/nextjs";
 import React from "react";
+// eslint-disable-next-line camelcase
 import { Inter, Space_Grotesk } from "next/font/google";
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/context/ThemeProvider";
