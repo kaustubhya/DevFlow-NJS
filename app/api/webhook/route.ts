@@ -8,6 +8,7 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
   //   TODO: Add your webhook secret to your .env.local
+  // TODO DONE!! ✅. Done After Deploying App and Making an endpoint URL (see notes)
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
   if (!WEBHOOK_SECRET) {
@@ -55,6 +56,9 @@ export async function POST(req: Request) {
   // Do something with the payload
   // For this guide, you simply log the payload to the console
   const eventType = evt.type;
+
+  // testing if webhook is created
+  console.log({ eventType });
 
   //   changing code and disabling camelcase for this entire file
   if (eventType === "user.created") {

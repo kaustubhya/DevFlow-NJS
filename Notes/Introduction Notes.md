@@ -960,3 +960,20 @@ To create a new user, go to lib > actions > user.action.ts
 - choose your github repo
 - once selected, go the the repo dashboard, then go to settings > domains (on left sidebar) > edit the git branch from main to 026_webhooks_user_creation
 - push a new commit inside the 026_user_creation branch
+
+When the site is deployed, you will visit to your new site,
+https://dev-flow-ksd-git-026webhooks-creating-user-kaustubhyas-projects.vercel.app/
+
+Also I copied the above URL and pasted it in TinyMCE's website where I can allow the available list of URLs that can show my editor. Otherwise the editor would have been in read only mode.
+
+Now go to clerk dashboard > webhooks > add endpoint url
+
+Add this url: https://dev-flow-ksd-git-026webhooks-creating-user-kaustubhyas-projects.vercel.app/api/webhook
+
+Click the user updated, user created and user deleted boxes
+
+Click create.
+
+Now we get a signing secret, copy it and paste it in .env.local
+
+Now to test if the webhook is working or not, go to middleware.ts and add the webhook route
