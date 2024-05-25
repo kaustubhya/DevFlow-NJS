@@ -23,35 +23,10 @@
 //   matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
 // };
 
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { clerkMiddleware } from "@clerk/nextjs/server";
 
-// Define public routes
-const isPublicRoute = createRouteMatcher([
-  "/",
-  "/api/webhook", // This should be public as per your earlier configuration
-  "/question/:id",
-  "/tags",
-  "/tags/:id",
-  "/profile/:id",
-  "/community",
-  "/jobs",
-]);
-
-// Define ignored routes
-const isIgnoredRoute = createRouteMatcher(["/api/webhook", "/api/chatgpt"]);
-
-export default clerkMiddleware((auth, req) => {
-  // Check if the route is ignored
-  if (isIgnoredRoute(req)) {
-    return;
-  }
-
-  // Check if the route is public
-  if (!isPublicRoute(req)) {
-    // Protect all other routes
-    auth().protect();
-  }
-});
+// Make sure that the `/api/webhooks/(.*)` route is not protected here
+export default clerkMiddleware();
 
 export const config = {
   matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
