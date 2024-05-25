@@ -953,3 +953,10 @@ To see the USER details when user is created go here: (C:\Next Adrian\devflow\no
 Now we will create a new user,
 
 To create a new user, go to lib > actions > user.action.ts
+
+🛑🛑 We will now deploy our website in its current state to test out the webhooks, for that:
+
+- signin to vercel
+- choose your github repo
+- once selected, go the the repo dashboard, then go to settings > domains (on left sidebar) > edit the git branch from main to 026_webhooks_user_creation
+- push a new commit inside the 026_user_creation branch
