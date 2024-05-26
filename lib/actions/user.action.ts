@@ -5,6 +5,7 @@ import { connectToDatabase } from "../mongoose";
 import {
   CreateUserParams,
   DeleteUserParams,
+  GetAllUsersParams,
   UpdateUserParams,
 } from "./shared.types";
 import { revalidatePath } from "next/cache";
@@ -106,4 +107,22 @@ export async function deleteUser(params: DeleteUserParams) {
     console.log(error);
     throw error;
   }
+}
+
+export async function getAllUsers(params: GetAllUsersParams) {
+  try {
+    connectToDatabase();
+
+    // Now if we see the GetAllUsersParams, we see various props in it, so let us first give some default values to these props by de-structuring the props and params
+    // const { page = 1, pageSize = 20, filter, searchQuery } = params;
+    // some default values and params destructuring, eg. if page doesn't exist, then page = 1
+
+    const users = await User.find({}).sort({ createdAt: -1 }); // get all users and sort in such a way that latest users appear on top
+
+    return { users };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+  // go back to app > (root) > community > page.tsx
 }

@@ -1003,5 +1003,19 @@ Remove the fake user and comment out the userId from auth, also import auth
 - in components > cards > questioncard.tsx
   change the metric tag of user, use this code:
   `imgUrl={author.picture}`
+
   - we get an error saying the image is being served by clerk.
   - for that go to next.config.mjs
+
+  🛑🛑🛑🛑 Community Page
+  Let us start with building the community page, for this go to app > (root) > community > page.tsx
+
+  After putting in the reusable components of local search bar and filters, we will go to lib > actions > user.action.ts to create a getAllUsers function there, which will fetch all of our users from the backend.
+
+  After that in community > page.tsx, we style it a bit and then let us create a card component to display all users.
+
+  Go to components > cards > UserCard.tsx
+
+  Creating Tags in a community page can be a little tough as we have to fetch all the questions that the user has asked and the tags associated with it. Similarly what tags has the user used while answering to a question.
+
+  For that, we need to create a tag action, so go to lib > actions > tag.action.ts
