@@ -1019,3 +1019,7 @@ Remove the fake user and comment out the userId from auth, also import auth
   Creating Tags in a community page can be a little tough as we have to fetch all the questions that the user has asked and the tags associated with it. Similarly what tags has the user used while answering to a question.
 
   For that, we need to create a tag action, so go to lib > actions > tag.action.ts
+
+  🛑🛑 After making the community page, let us work on making the tags page, go to : app > (root) > tags > page.tsx
+
+  Now to fetch all tags, go to lib > actions > tag.action.ts
