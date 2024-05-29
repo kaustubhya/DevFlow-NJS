@@ -33,6 +33,7 @@ import { Badge } from "../ui/badge";
 import Image from "next/image";
 import { createQuestion } from "@/lib/actions/question.action";
 import { useRouter, usePathname } from "next/navigation";
+import { useTheme } from "@/context/ThemeProvider";
 
 const type: any = "create"; // form type (create or edit)
 
@@ -44,6 +45,8 @@ interface Props {
 }
 
 const Question = ({ mongoUserId }: Props) => {
+  const { mode } = useTheme();
+
   // For the tiny mce editor, we will establish a reference, this will make sure that we will not take values after every key stroke or key input, it takes values at once together.
   const editorRef = useRef(null);
 
@@ -170,7 +173,6 @@ const Question = ({ mongoUserId }: Props) => {
           render={({ field }) => (
             <FormItem className="flex w-full flex-col">
               <FormLabel className="paragraph-semibold text-dark400_light800">
-                {" "}
                 Question Title <span className="text-primary-500">*</span>
               </FormLabel>
               <FormControl className="mt-3.5">
@@ -197,7 +199,7 @@ const Question = ({ mongoUserId }: Props) => {
             <FormItem className="flex w-full flex-col gap-3">
               <FormLabel className="paragraph-semibold text-dark400_light800">
                 Detailed Explaination of your problem
-                <span className="text-primary-500">*</span>
+                <span className="text-primary-500"> *</span>
               </FormLabel>
               <FormControl className="mt-3.5">
                 {/* 🛑🛑 Add an Editor */}
@@ -239,6 +241,9 @@ const Question = ({ mongoUserId }: Props) => {
                       "codesample | bold italic forecolor | alignleft aligncenter |" +
                       "alignright alignjustify | bullist numlist outdent indent | ",
                     content_style: "body { font-family:Inter; font-size:16px }",
+                    skin: mode === "dark" ? "oxide-dark" : "oxide", // this changes color of menu bar of editor
+                    content_css: mode === "dark" ? "dark" : "light", // this changes color of content area of editor
+                    // 🛑 these 2 will make our editor look good in dark mode, but to ensure it only looks like this in dark mode and its default look in light mode, we use a useTheme() above and use conditional rendering here
                   }}
                 />
               </FormControl>

@@ -7,7 +7,11 @@
 import Question from "@/database/question.model";
 import { connectToDatabase } from "../mongoose";
 import Tag from "@/database/tag.model";
-import { CreateQuestionParams, GetQuestionsParams } from "./shared.types";
+import {
+  CreateQuestionParams,
+  GetQuestionByIdParams,
+  GetQuestionsParams,
+} from "./shared.types";
 import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
 // Creating our first action
@@ -102,3 +106,28 @@ export async function createQuestion(params: CreateQuestionParams) {
 }
 
 // to trigger the async action, import this in our Question.tsx page, go there
+
+export async function getQuestionById(params: GetQuestionByIdParams) {
+  try {
+    connectToDatabase();
+
+    const { questionId } = params;
+
+    const question = await Question.findById(questionId)
+      .populate({ path: "tags", model: Tag, select: "_id name" })
+      .populate({
+        path: "author",
+        model: User,
+        select: "_id clerkId name picture",
+      });
+
+    // now the basic idea is that the title and content of the question will come on its own, but for things like tags and authors, which are linked to other models like tag and user model, we have to populate them here
+    // in populate, we give the path, the model name and the things we need to bring in here, we put all those things under select
+    return question;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+// go back to app > (root) > question > [id] > page.tsx

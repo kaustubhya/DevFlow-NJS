@@ -1,5 +1,7 @@
 // import Head from "next/head";
 import "./globals.css";
+// prismjs css file import
+import "../styles/prism.css";
 
 import {
   ClerkProvider,

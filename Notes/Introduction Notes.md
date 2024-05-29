@@ -1022,4 +1022,77 @@ Remove the fake user and comment out the userId from auth, also import auth
 
   🛑🛑 After making the community page, let us work on making the tags page, go to : app > (root) > tags > page.tsx
 
-  Now to fetch all tags, go to lib > actions > tag.action.ts
+  Now to fetch all tags, go to lib > actions > tag.action.ts and then use that fetch the tags and then to go back to our tags page
+
+🛑🛑🛑 Now we will create our question details page, i.e. the page that appears when we click a question.
+
+For this, we can create our first dynamic route, so go to app > (root) > question > [id] > page.tsx
+
+Now we might be wondering how did we get to this page while clicking on a question and what is the ID of the question we are currently looking at.
+
+For this, we can access something called `searchParams`.
+For now it is empty but we will fill it later on.
+
+Now to get just the Id of the question, we can use `params`.
+We get the ID now.
+
+So the key here is the [id], (look at the file structure of the page.tsx in question) and the value is the id of the question we get when we use params, we can get this value easily when we see the url of our app (http://localhost:3000/question/665543c4a52092db2b2e069b), see the value (id) after /question.
+
+So let us start with the UI, go to the page.tsx
+
+Our first task in the UI of this page is to fetch all the details of the question based on its param ID.
+
+Foe that we can simply go to lib > actions > question.action.ts and make a function called (getQuestionById)
+
+Do the remaining work on app > (root) > question > [id] > page.tsx.
+
+🛑 Now to display the code bit in this page, we will create a new component, do: components > shared > ParseHTML.tsx.
+
+🛑 Now to display beautiful colored code bits, we can use a library here, called `Prism.js`, this will show us the desired code colored bits according to the language provided.
+
+Prism is a lightweight, extensible syntax highlighter, built with modern web standards in mind. It’s used in millions of websites, including some of those you visit daily.
+
+Used by:
+
+- Smashing Magazine
+- A List Apart
+- Mozilla Developer Network (MDN)
+- CSS-Tricks
+- SitePoint
+- Drupal
+- React
+- Stripe
+- MySQL
+
+Now we will use 2 prism packages here,
+
+- For normal Markdown Content, we will use npm html-react-parser package
+- For code content we will use npm prismjs package
+
+Install both of these together
+
+`npm install prismjs html-react-parser`
+
+Now go to components > shared > ParseHTML.tsx.
+
+🛑 After making the necessary imports and modifications, we need one more thing: we need the necessary CSS to use with Prism, so for that we need to make a CSS file for prism, go here for the CSS Prism file: styles > prism.css.
+
+This will give us our highlighting.
+
+🛑 Now go to App > layout.tsx, `import '../styles/prism.css';` just below `import './globals.css'`
+
+Prism over....
+
+Go back to app > (root) > question > [id] > page.tsx,
+
+first we worked with rendering tags.
+
+Now we want to display all the answers to our question. For that, we will use an Answer Form to show all the answers to our questions.
+
+Go to components > forms > Answer.tsx
+
+Now first we create a form using React Hook Form and ShadCN UI.
+
+Next we have to create an Answer Schema, for that we have to go to lib > validations.ts
+
+After that go back to components > forms > Answer.tsx

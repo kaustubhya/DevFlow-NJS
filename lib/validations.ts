@@ -14,3 +14,9 @@ export const QuestionsSchema = z.object({
   // There can be minimum 1 and maximum 3 tags
   // In each tag, the length of string can be from 1 to 20 characters
 });
+
+// let us make an Answer Schema Now
+export const AnswerSchema = z.object({
+  answer: z.string().min(100),
+  // minimum 100 chars
+});
