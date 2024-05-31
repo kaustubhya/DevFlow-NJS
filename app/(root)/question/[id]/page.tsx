@@ -1,39 +1,36 @@
 import Answer from "@/components/forms/Answer";
+import AllAnswers from "@/components/shared/AllAnswers";
 import Metric from "@/components/shared/Metric";
 import ParseHTML from "@/components/shared/ParseHTML";
 import RenderTag from "@/components/shared/RenderTag";
 import { getQuestionById } from "@/lib/actions/question.action";
+import { getUserById } from "@/lib/actions/user.action";
 import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
+import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const page = async ({ params }) => {
+const Page = async ({ params }) => {
+  // to get author's access in our Answer.tsx component, we can get author / userId from clerk
+  const { userId: clerkId } = auth();
+
+  // based on this clerk id we are getting access to our mongodb user
+  let mongoUser;
+
+  if (clerkId) {
+    mongoUser = await getUserById({ userId: clerkId });
+  }
+  // Pass this to the Answer component below in return
+
   // Our first task in the UI of this page is to fetch all the details of the question based on its param ID (see notes)
   // We did that, now let us do things here
 
-  //   CHATGPTed the code below as it was giving error for answers.length as it was undefined
   // Log params to check if the ID is correctly passed
   console.log("Params: ", params);
 
-  // Fetch Question details
-  let result;
-  try {
-    result = await getQuestionById({ questionId: params.id });
-    console.log("Question Data: ", result);
-  } catch (error) {
-    console.error("Error Fetching Question Data: ", error);
-    return <div>Error Loading Question Data</div>;
-  }
+  const result = await getQuestionById({ questionId: params.id });
 
-  // Check if the result is as expected
-  if (!result || !result.author || !result.createdAt || !result.title) {
-    console.error("Unexpected result format: ", result);
-    return <div>Invalid question data</div>;
-  }
-
-  const answersCount = result.answers ? result.answers.length : 0;
-  const viewsCount = result.views !== undefined ? result.views : 0;
   return (
     <>
       <div className="flex-start w-full flex-col">
@@ -53,7 +50,6 @@ const page = async ({ params }) => {
               {result.author.name}
             </p>
           </Link>
-          <div>Voting</div>
         </div>
         <h2 className="h2-semibold text-dark200_light900 mt-3.5 w-full text-left">
           {result.title}
@@ -61,7 +57,7 @@ const page = async ({ params }) => {
       </div>
 
       <div className="mb-8 mt-5 flex flex-wrap gap-4">
-        {/* Metrics-> Upvotes, Message, Eye */}
+        {/* Metrics-> Upvotes, Message (Answers), Eye (Views) */}
         <Metric
           imgUrl="/assets/icons/clock.svg"
           alt="Clock Icon"
@@ -69,19 +65,17 @@ const page = async ({ params }) => {
           title=" Asked" // give spaces here
           textStyles="small-medium text-dark400_light800"
         />
-
         <Metric
           imgUrl="/assets/icons/message.svg"
           alt="message"
-          value={formatAndDivideNumber(answersCount)}
+          value={formatAndDivideNumber(result.answers.length)}
           title=" Answers" // give spaces here
           textStyles="small-medium text-dark400_light800"
         />
-
         <Metric
           imgUrl="/assets/icons/eye.svg"
           alt="eye"
-          value={formatAndDivideNumber(viewsCount)}
+          value={formatAndDivideNumber(result.views)}
           title=" Views" // give spaces here
           textStyles="small-medium text-dark400_light800"
         />
@@ -104,10 +98,24 @@ const page = async ({ params }) => {
         ))}
       </div>
 
-      {/* Now we will use a form to show all the answers to our questions */}
-      <Answer />
+      {/* Showing all previous answers to our question  */}
+      <AllAnswers
+        questionId={result._id}
+        userId={JSON.stringify(mongoUser._id)}
+        totalAnswers={result.answers.length}
+      />
+
+      {/* Now we will use a form to show an editor to answer our questions */}
+      <Answer
+        question={result.content}
+        questionId={JSON.stringify(result._id)}
+        // from the top
+
+        authorId={JSON.stringify(mongoUser._id)}
+        // pass these as props in Answer.tsx
+      />
     </>
   );
 };
 
-export default page;
+export default Page;

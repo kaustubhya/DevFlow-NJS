@@ -1087,7 +1087,7 @@ Go back to app > (root) > question > [id] > page.tsx,
 
 first we worked with rendering tags.
 
-Now we want to display all the answers to our question. For that, we will use an Answer Form to show all the answers to our questions.
+🛑🛑🛑 Now we want to display all the answers to our question. For that, we will use an Answer Form to show all the answers to our questions.
 
 Go to components > forms > Answer.tsx
 
@@ -1096,3 +1096,20 @@ Now first we create a form using React Hook Form and ShadCN UI.
 Next we have to create an Answer Schema, for that we have to go to lib > validations.ts
 
 After that go back to components > forms > Answer.tsx
+
+🛑 Let us create our new answer model now, go to database > answer.model.ts
+
+🛑 Let us create an answer actions now:
+
+For that go to lib > actions > answer.action.ts
+
+🛑🛑 Let us now integrate the Answer Action inside the answer form. For that, let us go to components > forms > Answer.tsx. We will work on handleCreateAnswer().
+
+🛑🛑 Let us now work on displaying all our answers, for that, go to lib > actions > answer.action.ts > getAnswers
+
+We created the getAnswer action there.
+
+🛑 Now we need to show all the Answers on top of the Answer Editor, for that we will create another new component,
+
+go to components > shared > AllAnswers.tsx
+(call it in Answers.tsx above (Answers) component)

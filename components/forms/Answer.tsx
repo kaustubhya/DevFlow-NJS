@@ -1,7 +1,7 @@
 // making the form a client component
 "use client";
 
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   Form,
   FormField,
@@ -17,8 +17,21 @@ import { Editor } from "@tinymce/tinymce-react";
 import { useTheme } from "@/context/ThemeProvider";
 import { Button } from "../ui/button";
 import Image from "next/image";
+import { createAnswer } from "@/lib/actions/answer.action";
+import { usePathname } from "next/navigation";
 
-const Answer = () => {
+interface Props {
+  question: string;
+  questionId: string;
+  authorId: string;
+}
+
+const Answer = ({ question, questionId, authorId }: Props) => {
+  // see the <Answer /> in page.tsx of app, root, quesiton, [id]
+
+  // now to link the form path
+  const pathname = usePathname();
+
   // for button submitting
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -36,7 +49,37 @@ const Answer = () => {
     },
   });
 
-  const handleCreateAnswer = () => {};
+  const handleCreateAnswer = async (values: z.infer<typeof AnswerSchema>) => {
+    setIsSubmitting(true);
+
+    try {
+      await createAnswer({
+        //  call the server action and get the values from the form (see above in async). The values are of type answer schema
+        content: values.answer,
+        author: JSON.parse(authorId),
+        // now we donot have access to author, so we can go to app > (root) > question > [id] > page.tsx
+        // got access now
+
+        question: JSON.parse(questionId),
+        path: pathname,
+      });
+
+      // After doing all this, let us reset our form, in case we need to give multiple answers
+      form.reset();
+
+      // Also clearing our editor
+      if (editorRef.current) {
+        const editor = editorRef.current as any;
+
+        editor.setContent(""); // cleared the editor
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsSubmitting(false);
+      // whatever happens, any errors or something else, setIsSubmitting to false
+    }
+  };
 
   return (
     <div>
@@ -59,6 +102,7 @@ const Answer = () => {
           Generate an AI Answer
         </Button>
       </div>
+
       <Form {...form}>
         {/* Now we spread all the values of our react hook form within our form component */}
         {/* Form Imported from shadcn UI */}

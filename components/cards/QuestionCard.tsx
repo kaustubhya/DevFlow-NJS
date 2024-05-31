@@ -30,7 +30,7 @@ const QuestionCard = ({
   author,
   upvotes,
   views,
-  answers = [],
+  answers,
   createdAt,
 }: QuestionProps) => {
   // const showActionButtons = clerkId && clerkId === author.clerkId;
