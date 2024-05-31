@@ -11,6 +11,7 @@ import {
   CreateQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
+  QuestionVoteParams,
 } from "./shared.types";
 import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
@@ -131,3 +132,84 @@ export async function getQuestionById(params: GetQuestionByIdParams) {
 }
 
 // go back to app > (root) > question > [id] > page.tsx
+
+export async function upvoteQuestion(params: QuestionVoteParams) {
+  try {
+    connectToDatabase();
+
+    const { questionId, userId, hasupVoted, hasdownVoted, path } = params;
+
+    let updateQuery = {};
+
+    if (hasupVoted) {
+      // if we have already upvoted, we pull the upvote from upvotes
+      updateQuery = { $pull: { upvotes: userId } };
+    } else if (hasdownVoted) {
+      // if we have downvoted, we pull our downvotes from downvote and push the upvote to upvotes. 🛑🛑 Keep in mind, this is the upvote export function
+      updateQuery = {
+        $pull: { downvotes: userId },
+        $push: { upvotes: userId },
+      };
+    } else {
+      // if we have neither upvoted nor downvoted, we added a new upvote of userId to set
+      updateQuery = { $addToSet: { upvotes: userId } };
+    }
+
+    // update the question
+    const question = await Question.findByIdAndUpdate(questionId, updateQuery, {
+      new: true,
+    });
+    // {new: true} => creating a new document
+
+    if (!question) {
+      throw new Error("Question not found!!");
+    }
+
+    // Increment the author's reputation when he gets an upvote to a quesiton
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function downvoteQuestion(params: QuestionVoteParams) {
+  try {
+    connectToDatabase();
+
+    const { questionId, userId, hasupVoted, hasdownVoted, path } = params;
+
+    let updateQuery = {};
+
+    if (hasdownVoted) {
+      // if we have already downvoted, we pull the downvote from downvotes
+      updateQuery = { $pull: { downvotes: userId } };
+    } else if (hasupVoted) {
+      // if we have upvoted, we pull our upvotes from upvote and push the downvote to downvotes. 🛑🛑 Keep in mind, this is the downvote export function
+      updateQuery = {
+        $pull: { upvotes: userId },
+        $push: { downvotes: userId },
+      };
+    } else {
+      // if we have neither upvoted nor downvoted, we added a new downvote of userId to set
+      updateQuery = { $addToSet: { downvotes: userId } };
+    }
+
+    // update the question
+    const question = await Question.findByIdAndUpdate(questionId, updateQuery, {
+      new: true,
+    });
+    // {new: true} => creating a new document
+
+    if (!question) {
+      throw new Error("Question not found!!");
+    }
+
+    // Increment the author's reputation when he gets an upvote to a quesiton
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+// go to handlevote() in components > shared > Votes.tsx

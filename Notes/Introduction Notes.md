@@ -1113,3 +1113,18 @@ We created the getAnswer action there.
 
 go to components > shared > AllAnswers.tsx
 (call it in Answers.tsx above (Answers) component)
+
+🛑🛑🛑🛑 Let us now start working on Voting.
+
+For that, go to components > shared > Votes.tsx
+
+and import it in: app > (root) > question > [id] > page.tsx > Page()
+
+🛑 Let us now create server actions for upvoting and downvoting
+
+go to lib > actions > question.action.ts
+
+🛑 Time to integrate backend to frontend, go to handlevote() in components > shared > Votes.tsx
+
+Voting Working
+![](./images/Voting-Working.png)

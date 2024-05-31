@@ -10,6 +10,7 @@ import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import Voting from "@/components/shared/Votes";
 
 const Page = async ({ params }) => {
   // to get author's access in our Answer.tsx component, we can get author / userId from clerk
@@ -50,7 +51,26 @@ const Page = async ({ params }) => {
               {result.author.name}
             </p>
           </Link>
+
+          <div className="flex justify-end">
+            <Voting
+              type="Question"
+              itemId={JSON.stringify(result._id)}
+              userId={JSON.stringify(mongoUser._id)}
+              upvotes={result.upvotes.length}
+              // has the user himself upvoted the question -> checking by if the current question includes the id of the author
+              hasupVoted={result.upvotes.includes(mongoUser._id)}
+              downvotes={result.downvotes.length}
+              // has the user himself downvoted the question -> checking by if the current question includes the id of the author
+              hasdownVoted={result.downvotes.includes(mongoUser._id)}
+              // has the user himself saved the question -> checking if the saved array of an author has the id of the question
+              hasSaved={mongoUser?.saved.includes(result._id)}
+
+              // go to components > shared > Votes.tsx
+            />
+          </div>
         </div>
+
         <h2 className="h2-semibold text-dark200_light900 mt-3.5 w-full text-left">
           {result.title}
         </h2>
@@ -101,7 +121,7 @@ const Page = async ({ params }) => {
       {/* Showing all previous answers to our question  */}
       <AllAnswers
         questionId={result._id}
-        userId={JSON.stringify(mongoUser._id)}
+        userId={mongoUser._id}
         totalAnswers={result.answers.length}
       />
 
