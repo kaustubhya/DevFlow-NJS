@@ -1128,3 +1128,27 @@ go to lib > actions > question.action.ts
 
 Voting Working
 ![](./images/Voting-Working.png)
+
+🛑🛑 In the same way we create voting actions for answers, see question.action.ts and Votes.tsx for more.
+
+🛑🛑 Now let us work on Saving Questions functionality, this is only applicable to questions only (so we rendered this on the question part only (conditional rendering of this))
+
+In Votes.tsx, we will work on handleSave(), but first we need server action for this.
+
+This will go in user.action.ts as we have to save questions for a particular user.
+
+So go to lib > actions > user.action.ts
+
+After that is done, we worked on the handleSave functionality in Votes.tsx.
+
+We see now in our mongodb atlas in users section that if we save a question, we can see the saved array getting populated.
+
+So this functionality works well.
+
+🛑🛑 Let us now work on the collections page where we display all of the saved questions of a user.
+
+🛑 For that let us go to app > (root) > collection > page.tsx
+
+Process is same, we will go to lib > actions > user.action.ts; make a function: getSavedQuestions and then go back to app > (root) > collection > page.tsx
+
+🛑🛑🛑 Now we will implement the views functionality i.e. we will be able to see how many views a question gets and we will be able to see it in the question card. For that we will create a question details page view.
