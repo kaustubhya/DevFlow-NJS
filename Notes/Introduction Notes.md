@@ -1152,3 +1152,9 @@ So this functionality works well.
 Process is same, we will go to lib > actions > user.action.ts; make a function: getSavedQuestions and then go back to app > (root) > collection > page.tsx
 
 🛑🛑🛑 Now we will implement the views functionality i.e. we will be able to see how many views a question gets and we will be able to see it in the question card. For that we will create a question details page view.
+
+🛑 Also we will create a new server action for tis, go to lib > actions > interaction.action.ts
+
+🛑 Also we will create a new model for this action. Go to database > interaction.model.ts
+
+First make model, then make server actions, then use them in Vote.tsx in a useEffect hook.

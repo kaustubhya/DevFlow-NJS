@@ -2,6 +2,7 @@
 "use client";
 
 import { downvoteAnswer, upvoteAnswer } from "@/lib/actions/answer.action";
+import { viewQuestion } from "@/lib/actions/interaction.action";
 import {
   downvoteQuestion,
   upvoteQuestion,
@@ -10,7 +11,7 @@ import { toggleSaveQuestion } from "@/lib/actions/user.action";
 import { formatAndDivideNumber } from "@/lib/utils";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 
 interface Props {
   type: string;
@@ -35,7 +36,7 @@ const Voting = ({
   hasSaved,
 }: Props) => {
   const pathname = usePathname();
-  // const router = useRouter();
+  const router = useRouter(); // for useEffect dependency array
 
   const handleSave = async () => {
     await toggleSaveQuestion({
@@ -95,6 +96,19 @@ const Voting = ({
       //   todo: show a toast
     }
   };
+
+  // now for the view count, we are here after making an interaction model and an interaction action
+  useEffect(() => {
+    // whenever the useEffect hook is called, i.e. whenever the things inside the dependency array changes, do this:
+    viewQuestion({
+      questionId: JSON.parse(itemId),
+      userId: userId ? JSON.parse(userId) : undefined,
+      // if no user exists, pass undefined
+
+      // now this function will increment our view count in the votes component, and we see that the votes component is existing in every question so all are related
+    });
+  }, [itemId, userId, pathname, router]);
+  // call the useEffect hook whenever the things inside the dependency array changes
 
   return (
     <div className="flex gap-5">
