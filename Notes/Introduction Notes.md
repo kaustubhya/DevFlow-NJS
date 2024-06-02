@@ -1153,8 +1153,22 @@ Process is same, we will go to lib > actions > user.action.ts; make a function: 
 
 🛑🛑🛑 Now we will implement the views functionality i.e. we will be able to see how many views a question gets and we will be able to see it in the question card. For that we will create a question details page view.
 
-🛑 Also we will create a new server action for tis, go to lib > actions > interaction.action.ts
+🛑 Also we will create a new server action for this, go to lib > actions > interaction.action.ts
 
 🛑 Also we will create a new model for this action. Go to database > interaction.model.ts
 
 First make model, then make server actions, then use them in Vote.tsx in a useEffect hook.
+
+🛑🛑🛑 Let us now start working on our tag details page, i.e. we will make a page for all the tags that are clicked and we will show all the respective questions related to those tags.
+
+It is similar to the question > [id] page where we had a page for each question.
+
+So similarly, we will use dynamic routing for this. Go to app > (root) > tags > [id] > page.tsx.
+
+We keep the tag details page and tags page under the same parent root folder i.e. tags, just that this page is for each tag id, hence the dynamic routing.
+
+Let us make an action for this too, in tag.action.ts > getQuestionByTagId
+
+🛑🛑🛑 Let us now create a profile page, for this we will have to do: app > (root) > profile > [id] > page.tsx
+
+Now to update the dynamic routing nature of Profile page, go to LeftSidebar.tsx .

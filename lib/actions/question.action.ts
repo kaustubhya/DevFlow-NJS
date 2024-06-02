@@ -80,7 +80,7 @@ export async function createQuestion(params: CreateQuestionParams) {
           name: { $regex: new RegExp(`^${tag}$`, "i") }, // i -> case insensitive for searching tags
         }, // allows us to find something (tags here)
 
-        { $setOnInsert: { name: tag }, $push: { question: question._id } }, // allows us to do something on it (once tag is found, we name it and insert/push it in the created question (by the question id))
+        { $setOnInsert: { name: tag }, $push: { questions: question._id } }, // allows us to do something on it (once tag is found, we name it and insert/push it in the created question (by the question id))
         { upsert: true, new: true } // providing additional querry options (here we create a new instance of the tag)
       );
       tagDocuments.push(existingTag._id);
