@@ -60,45 +60,70 @@ eg. 2 days ago ; 5 minutes ago; 6 hours ago. Something like this.
 
 // Utility function for views, votes and answers in a readible format
 
+export const formatAndDivideNumber = (num: number): string => {
+  if (num >= 1000000000) {
+    // Billions
+    const billionValue = (num / 1000000000).toFixed(1);
+    if (billionValue.endsWith(".0")) {
+      return billionValue.slice(0, -2) + "B"; // Remove the decimal and ".0"
+      // 🛑🛑 0 means start from the beginning and -2 means slice the last 2 digits of the number (here it is 0 and .)
+    } else {
+      return billionValue + "B";
+    }
+  } else if (num >= 1000000) {
+    // Millions
+    const millionValue = (num / 1000000).toFixed(1);
+    if (millionValue.endsWith(".0")) {
+      return millionValue.slice(0, -2) + "M"; // Remove the decimal and ".0"
+    } else {
+      return millionValue + "M";
+    }
+  } else if (num >= 1000) {
+    // Thousands
+    const thousandValue = (num / 1000).toFixed(1);
+    if (thousandValue.endsWith(".0")) {
+      return thousandValue.slice(0, -2) + "K"; // Remove the decimal and ".0"
+    } else {
+      return thousandValue + "K";
+    }
+  } else {
+    return num.toString(); // Return as is
+  }
+};
+
 // export const formatAndDivideNumber = (num: number): string => {
-//   if (num >= 1000000000) {
-//     // Billions
-//     const billionValue = (num / 1000000000).toFixed(1);
-//     if (billionValue.endsWith(".0")) {
-//       return billionValue.slice(0, -2) + "B"; // Remove the decimal and ".0"
-//       // 🛑🛑 0 means start from the beginning and -2 means slice the last 2 digits of the number (here it is 0 and .)
-//     } else {
-//       return billionValue + "B";
-//     }
-//   } else if (num >= 1000000) {
-//     // Millions
-//     const millionValue = (num / 1000000).toFixed(1);
-//     if (millionValue.endsWith(".0")) {
-//       return millionValue.slice(0, -2) + "M"; // Remove the decimal and ".0"
-//     } else {
-//       return millionValue + "M";
-//     }
+//   if (num >= 1000000) {
+//     const formattedNum = (num / 1000000).toFixed(1);
+//     return `${formattedNum}M`;
 //   } else if (num >= 1000) {
-//     // Thousands
-//     const thousandValue = (num / 1000).toFixed(1);
-//     if (thousandValue.endsWith(".0")) {
-//       return thousandValue.slice(0, -2) + "K"; // Remove the decimal and ".0"
-//     } else {
-//       return thousandValue + "K";
-//     }
+//     const formattedNum = (num / 1000).toFixed(1);
+//     return `${formattedNum}K`;
 //   } else {
-//     return num.toString(); // Return as is
+//     return num.toString();
 //   }
 // };
 
-export const formatAndDivideNumber = (num: number): string => {
-  if (num >= 1000000) {
-    const formattedNum = (num / 1000000).toFixed(1);
-    return `${formattedNum}M`;
-  } else if (num >= 1000) {
-    const formattedNum = (num / 1000).toFixed(1);
-    return `${formattedNum}K`;
-  } else {
-    return num.toString();
-  }
+// Write a TypeScript function that takes a JavaScript date object as a parameter and returns a joined date (just a month and a year)
+export const getJoinedDate = (date: Date): string => {
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const month = monthNames[date.getMonth()];
+  const year = date.getFullYear();
+  return `${month} ${year}`;
 };
+
+// Example usage:
+// const date = new Date();
+// console.log(getJoinedDate(date)); // Outputs something like "6-2024" if the current month is June and the year is 2024

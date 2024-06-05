@@ -1172,3 +1172,46 @@ Let us make an action for this too, in tag.action.ts > getQuestionByTagId
 🛑🛑🛑 Let us now create a profile page, for this we will have to do: app > (root) > profile > [id] > page.tsx
 
 Now to update the dynamic routing nature of Profile page, go to LeftSidebar.tsx .
+
+Now we will make a server action in user.action.ts called getUserInfo()
+
+Going back to page.tsx, we will use `TABS` from shadcnui here, hence we install them.
+
+Now we notice in our profile page, we see our date format, so to fix this, go to lib > utils.ts
+
+Now when we click on Edit Button, we can see some components, for that go to components > shared > Profile Links
+
+Call it in app > (root) > profile > [id] > page.tsx
+
+🛑🛑 We will now work on Stats: For that, go to components > shared > Stats.tsx
+
+Pass the stats component in app > (root) > profile > [id] > page.tsx
+
+🛑🛑 Now it is time to make some more components for our tabs in the profile page.
+
+Render it in app > (root) > profile > [id] > page.tsx inside the TabsTrigger Component.
+
+🛑 Questions Tab:
+Make these in:
+
+- components > shared > QuestionsTab.tsx &
+
+Let us now create an action for this, we can do this by going to user.action.ts > getUserQuestions
+
+Go to QuestionsTab now to use this action and also import the questions card component for re-usability.
+
+🛑🛑 Now let us go to Answers Tab now, go to components > shared > AnswersTab.tsx
+
+Make the action for it in user.action.tsx
+
+Now for this, we need an AnswerCard as the card here is a bit different from the Questions card. So, go to components > cards > AnswerCard.tsx
+
+🛑🛑 In our profile Page, now we will try to make an edit and delete button which will allow us to edit and delete our questions and answers
+
+For questions, it will be a complete CRUD.
+
+For answers, it is just delete.
+
+Go to QuestionCard.tsx for this, call the action button only if the user is signed in
+
+One more thing, we have to create a separate component for this buttons, go to components > shared > EditDeleteAction.tsx

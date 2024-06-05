@@ -3,6 +3,8 @@ import React from "react";
 import RenderTag from "../shared/RenderTag";
 import Metric from "../shared/Metric";
 import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
+import { SignedIn } from "@clerk/nextjs";
+import EditDeleteAction from "../shared/EditDeleteAction";
 
 interface QuestionProps {
   _id: string;
@@ -21,6 +23,7 @@ interface QuestionProps {
   answers: Array<object>;
   // Array of objects
   createdAt: Date;
+  clerkId?: string;
 }
 
 const QuestionCard = ({
@@ -32,8 +35,10 @@ const QuestionCard = ({
   views,
   answers,
   createdAt,
+  clerkId, // used in questionstab.tsx and answerstab.tsx
 }: QuestionProps) => {
-  // const showActionButtons = clerkId && clerkId === author.clerkId;
+  const showActionButtons = clerkId && clerkId === author.clerkId;
+  // checking if we are the authors of the question or not, if yes then only we will get to see the edit and delete question button
 
   return (
     <div className="card-wrapper rounded-[10px] p-9 sm:px-11">
@@ -56,6 +61,11 @@ const QuestionCard = ({
         </div>
 
         {/* If signed in, add edit delete actions */}
+        <SignedIn>
+          {showActionButtons && (
+            <EditDeleteAction type="Question" itemId={JSON.stringify(_id)} />
+          )}
+        </SignedIn>
       </div>
 
       <div className="mt-3.5 flex flex-wrap gap-2">

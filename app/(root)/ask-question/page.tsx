@@ -25,7 +25,7 @@ const Page = async () => {
       <h1 className="h1-bold text-dark100_light900">Ask a Question</h1>
       <div className="mt-9">
         {/*  coming from backend -> when we have our userId from mongodb, we pass it to the question form. It is good to stringify things */}
-        <Question mongoUserId={JSON.stringify(mongoUser._id)} />
+        <Question mongoUserId={JSON.stringify(mongoUser?._id)} />
         {/* take the  mongoUserId to questions as a prop */}
       </div>
     </div>

@@ -9,11 +9,14 @@ import {
   DeleteUserParams,
   GetAllUsersParams,
   GetSavedQuestionsParams,
+  GetUserByIdParams,
+  GetUserStatsParams,
   ToggleSaveQuestionParams,
   UpdateUserParams,
 } from "./shared.types";
 import { revalidatePath } from "next/cache";
 import Question from "@/database/question.model";
+import Answer from "@/database/answer.model";
 
 // make an async function
 // pass params as arguments
@@ -208,3 +211,75 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
   }
 }
 // go to app > root > collection > page.tsx > Home()
+
+export async function getUserInfo(params: GetUserByIdParams) {
+  try {
+    connectToDatabase();
+
+    const { userId } = params;
+
+    const user = await User.findOne({ clerkId: userId });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const totalQuestions = await Question.countDocuments({ author: user._id });
+    const totalAnswers = await Answer.countDocuments({ author: user._id });
+
+    return {
+      user,
+      totalQuestions,
+      totalAnswers,
+    };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+// go to app > (root) > profile > [id] > page.tsx > Page
+
+// this is a server action that will display the questions created by the user with pagination support.
+export async function getUserQuestions(params: GetUserStatsParams) {
+  try {
+    connectToDatabase();
+
+    const { userId, page = 1, pageSize = 10 } = params;
+
+    const totalQuestions = await Question.countDocuments({ author: userId });
+
+    // achieve pagination
+    const userQuestions = await Question.find({ author: userId })
+      .sort({ views: -1, upvotes: -1 })
+      .populate("tags", "_id name")
+      .populate("author", "_id clerkId name picture");
+    // Basically we returned questions with most views and upvotes, and populated it with author and tag details
+
+    return { totalQuestions, questions: userQuestions };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getUserAnswers(params: GetUserStatsParams) {
+  try {
+    connectToDatabase();
+
+    const { userId, page = 1, pageSize = 10 } = params;
+
+    const totalAnswers = await Answer.countDocuments({ author: userId });
+
+    const userAnswers = await Answer.find({ author: userId })
+      .sort({ upvotes: -1 })
+      .populate("question", "_id title")
+      .populate("author", "_id clerkId name picture");
+    // Basically we returned questions with most views and upvotes, and populated it with author details
+
+    return { totalAnswers, answers: userAnswers };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
