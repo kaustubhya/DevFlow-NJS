@@ -9,12 +9,16 @@ import { connectToDatabase } from "../mongoose";
 import Tag from "@/database/tag.model";
 import {
   CreateQuestionParams,
+  DeleteQuestionParams,
+  EditQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
   QuestionVoteParams,
 } from "./shared.types";
 import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
+import Answer from "@/database/answer.model";
+import Interaction from "@/database/interaction.model";
 // Creating our first action
 
 export async function getQuestions(params: GetQuestionsParams) {
@@ -213,3 +217,57 @@ export async function downvoteQuestion(params: QuestionVoteParams) {
   }
 }
 // go to handlevote() in components > shared > Votes.tsx
+
+export async function deleteQuestion(params: DeleteQuestionParams) {
+  try {
+    connectToDatabase();
+
+    const { questionId, path } = params;
+
+    await Question.deleteOne({ _id: questionId });
+    // delete the selected question
+    await Answer.deleteMany({ question: questionId });
+    // delete all answers related to that question
+
+    // deleting all interactions related to that answer/question
+    await Interaction.deleteMany({ question: questionId });
+
+    // update the tags which have the reference to this question i.e. pull all those tags that had something to do with this question
+    await Tag.updateMany(
+      { questions: questionId },
+      { $pull: { questions: questionId } }
+    );
+
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function editQuestion(params: EditQuestionParams) {
+  try {
+    connectToDatabase();
+
+    const { questionId, title, content, path } = params;
+
+    // find the question to be edited
+    const question = await Question.findById(questionId).populate("tags");
+
+    if (!question) {
+      throw new Error("Question not found");
+    }
+
+    // if there is a question
+    question.title = title;
+    question.content = content;
+
+    // now we donot want the user to update our tags (see Question.tsx)
+
+    // finally save our question
+    await question.save();
+
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+  }
+}

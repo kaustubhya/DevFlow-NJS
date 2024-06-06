@@ -1215,3 +1215,41 @@ For answers, it is just delete.
 Go to QuestionCard.tsx for this, call the action button only if the user is signed in
 
 One more thing, we have to create a separate component for this buttons, go to components > shared > EditDeleteAction.tsx
+
+Now let us create a server action to delete questions, for that, go to lib > actions > question.action.ts > DeleteQuestions()
+
+Similarly, to delete answers, go to answers.actions.ts > deleteAnswers.
+
+🛑🛑 Now we will make an edit questions page which will enable us to go to that whenever we click on edit questions option on our profile page.
+For that, go to app > (root) > question > edit > [id] > page.tsx.
+As we will have an edit option for every quesiton, we will make this a dynamic route.
+
+🛑🛑 Let us now build an edit profile page. Go to app > (root) > profile > edit > page.tsx.
+
+We will not use an [id] here as we can only edit the profile once we are logged in.
+
+Now the layout is similar to an edit question page, but instead of a question form, we will use a profile form.
+
+So let us make a profile form, for that, go to components > forms > Profile.tsx
+
+Here we used a new ShadCn UI component: Textarea so we install it
+
+Also make a profile Schema in lib > validations.ts
+
+Now to update the user info when form is being submitted, we go to user.action.ts > updateUser (as this is already created, just call it in profile form)
+
+🛑 Params passed in the functional components are called props.
+🛑 In normal functions they are called Params
+🛑 Arguments,these are also like params
+
+eg,
+
+```js
+const addNums = (a: number, b: number) => {
+  return a+b;
+
+  // Here a and b are params
+}
+
+addNums(14, 4) // => Now these are called arguments when we pass them
+```

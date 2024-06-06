@@ -3,6 +3,7 @@ import Link from "next/link";
 import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
 import { SignedIn } from "@clerk/nextjs";
 import Metric from "../shared/Metric";
+import EditDeleteAction from "../shared/EditDeleteAction";
 // import EditDeleteAction from "../shared/EditDeleteAction";
 
 interface Props {
@@ -33,6 +34,9 @@ const AnswerCard = ({
 }: Props) => {
   // const showActionButtons = clerkId && clerkId === author.clerkId;
 
+  const showActionButtons = clerkId && clerkId === author.clerkId;
+  // checking if we are the authors of the question or not, if yes then only we will get to see the edit and delete question button
+
   return (
     <Link
       // if question is undefined, add a ?, see below
@@ -49,11 +53,12 @@ const AnswerCard = ({
           </h3>
         </div>
 
-        {/* <SignedIn>
-                {showActionButtons && (
-                    <EditDeleteAction type='Answer' itemId={JSON.stringify{_id}} />
-                )}
-            </SignedIn> */}
+        {/* If signed in, add edit delete actions */}
+        <SignedIn>
+          {showActionButtons && (
+            <EditDeleteAction type="Answer" itemId={JSON.stringify(_id)} />
+          )}
+        </SignedIn>
       </div>
 
       <div className="flex-between mt-6 w-full flex-wrap gap-3">

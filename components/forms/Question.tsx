@@ -31,20 +31,21 @@ import React, { useRef, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
-import { createQuestion } from "@/lib/actions/question.action";
+import { createQuestion, editQuestion } from "@/lib/actions/question.action";
 import { useRouter, usePathname } from "next/navigation";
 import { useTheme } from "@/context/ThemeProvider";
-
-const type: any = "create"; // form type (create or edit)
 
 // Prop from ask a question > page.tsx
 
 interface Props {
+  // form type (create or edit)
+  type?: string;
   mongoUserId: string;
   // now go to author in createQuestion below ↓ to use it
+  questionDetails?: string;
 }
 
-const Question = ({ mongoUserId }: Props) => {
+const Question = ({ type, mongoUserId, questionDetails }: Props) => {
   const { mode } = useTheme();
 
   // For the tiny mce editor, we will establish a reference, this will make sure that we will not take values after every key stroke or key input, it takes values at once together.
@@ -57,15 +58,21 @@ const Question = ({ mongoUserId }: Props) => {
   const router = useRouter();
   const pathname = usePathname(); // this tells us on which pathname we are on right now
 
-  // We will pull the below 2 functions into our questions component which is already existing
+  // This section is for edit question, actually we want to pre-populate the form while editing the question, i.e. the entered details should already be present while editing a question
+  // Using react hook form for this
+  const parsedQuestionDetails = JSON.parse(questionDetails || "");
 
+  // Now for tags, we want it to be implemented in such a way so that the input tag field is not populated but rather the fields below it is populated
+  const groupedTags = parsedQuestionDetails.tags.map((tag) => tag.name);
+
+  // We will pull the below 2 functions into our questions component which is already existing
   // 1. Define your form., importing the formSchema aka QuestionsSchema
   const form = useForm<z.infer<typeof QuestionsSchema>>({
     resolver: zodResolver(QuestionsSchema),
     defaultValues: {
-      title: "",
-      explaination: "",
-      tags: [],
+      title: parsedQuestionDetails.title || "",
+      explaination: parsedQuestionDetails.content || "",
+      tags: groupedTags || [],
       //  validation values took from lib > validations.tsx
     },
   });
@@ -77,32 +84,45 @@ const Question = ({ mongoUserId }: Props) => {
 
     // setting some failsafes
     try {
-      // Let us first focus on "creating a question"
-      // For that we will make an async call to our API
-      // That call contains all of our form data
-      // Then we will navigate to our home page to see the list of all visible questions
-      // We will use Next.js server actions for this (see notes)
+      // Earlier we focused on just creating a question, now we will try to edit a question and then submit it
+      // if type == edit, call edit functionalities else create a question functionalities
+      if (type === "Edit") {
+        await editQuestion({
+          questionId: parsedQuestionDetails._id,
+          title: values.title,
+          content: values.explaination,
+          path: pathname,
+        });
+        router.push(`/question/${parsedQuestionDetails._id}`);
+        // go to the question details page, once the question is edited
+      } else {
+        // Let us first focus on "creating a question"
+        // For that we will make an async call to our API
+        // That call contains all of our form data
+        // Then we will navigate to our home page to see the list of all visible questions
+        // We will use Next.js server actions for this (see notes)
 
-      // After writing MongoDB code and installing and connecting to Mongo DB database, we trigger the async function of question.action.ts (import it before executing code)
+        // After writing MongoDB code and installing and connecting to Mongo DB database, we trigger the async function of question.action.ts (import it before executing code)
 
-      // 🛑 After doing all of the backend stuff and inserting the first user in the database, we will now proceed
-      await createQuestion({
-        title: values.title,
-        content: values.explaination,
-        tags: values.tags,
+        // 🛑 After doing all of the backend stuff and inserting the first user in the database, we will now proceed
+        await createQuestion({
+          title: values.title,
+          content: values.explaination,
+          tags: values.tags,
 
-        // author is tricky as we have to request the database for this user
-        // Let us create a user action for this and we will come back here (notes)
-        author: JSON.parse(mongoUserId),
-        // Coming back after doing work in page.tsx and mongoUserId prop above
-        path: pathname,
-      }); // Passed all things to create a question
+          // author is tricky as we have to request the database for this user
+          // Let us create a user action for this and we will come back here (notes)
+          author: JSON.parse(mongoUserId),
+          // Coming back after doing work in page.tsx and mongoUserId prop above
+          path: pathname,
+        }); // Passed all things to create a question
 
-      // Now when we submit the form in Question.tsx (client side), it runs the quesiton action on question.action.ts (server side), and it calls connect to db in mongoose.ts (database) (set params in question.action.ts to type : any)
-      // These working of 3 files make server actions so great in Next.js (see diagrams)
+        // Now when we submit the form in Question.tsx (client side), it runs the quesiton action on question.action.ts (server side), and it calls connect to db in mongoose.ts (database) (set params in question.action.ts to type : any)
+        // These working of 3 files make server actions so great in Next.js (see diagrams)
 
-      // Let us go to home page now
-      router.push("/");
+        // Let us go to home page now
+        router.push("/");
+      }
     } catch (error) {
     } finally {
       // it always runs on any condition - true or false
@@ -211,7 +231,7 @@ const Question = ({ mongoUserId }: Props) => {
                   }}
                   onBlur={field.onBlur} // This onBlur runs once we exit the editor and field.onBlur saves the values once we exit
                   onEditorChange={(content) => field.onChange(content)} // get the content from the editor and do field.onChange(content)
-                  initialValue=""
+                  initialValue={parsedQuestionDetails.content || ""}
                   init={{
                     height: 350,
                     menubar: false,
@@ -269,6 +289,7 @@ const Question = ({ mongoUserId }: Props) => {
                 {/* We are giving this form control 2 components, but since it can only handle one component, we will wrap the 2 components below in a <></> and make it as one */}
                 <>
                   <Input
+                    disabled={type === "Edit"} // disble the input tags option field when the form is in edit mode
                     className="no-focus paragraph-regular background-light900_dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
                     placeholder="Add Tags..."
                     // {...field}
@@ -285,16 +306,22 @@ const Question = ({ mongoUserId }: Props) => {
                         <Badge
                           key={tag}
                           className="subtle-medium background-light800_dark300 text-light400_light500 flex items-center justify-center gap-2 rounded-md border-none px-4 py-2 capitalize"
-                          onClick={() => handleTagRemove(tag, field)} // for tag removal, see function above
+                          onClick={() =>
+                            type !== "Edit" ? handleTagRemove(tag, field) : ""
+                          } // for tag removal, see function above
+                          // allow tag removal only if form is in create (!edit) mode
                         >
                           {tag}
-                          <Image
-                            src="/assets/icons/close.svg"
-                            alt="Close Icon"
-                            width={12}
-                            height={12}
-                            className="cursor-pointer object-contain invert-0 dark:invert" // invert just inverts colors in dark and invert-0 brings back the inverted color to normal
-                          />
+                          {type !== "Edit" && (
+                            <Image
+                              src="/assets/icons/close.svg"
+                              alt="Close Icon"
+                              width={12}
+                              height={12}
+                              className="cursor-pointer object-contain invert-0 dark:invert" // invert just inverts colors in dark and invert-0 brings back the inverted color to normal
+                            />
+                            // show the tags ❌ image only when form is in create mode
+                          )}
                         </Badge>
                       ))}
                     </div>
@@ -316,9 +343,9 @@ const Question = ({ mongoUserId }: Props) => {
         >
           {/* disabled={isSubmitting} this disables the button when it is submitting the form */}
           {isSubmitting ? (
-            <>{type === "edit" ? "Editing..." : "Posting..."}</>
+            <>{type === "Edit" ? "Editing..." : "Posting..."}</>
           ) : (
-            <>{type === "edit" ? "Edit Question" : "Ask a Question"}</>
+            <>{type === "Edit" ? "Edit Question" : "Ask a Question"}</>
           )}
           {/* A form can have 2 types, either it can be create a question (create type), or it can be edit a question (edit type) */}
         </Button>

@@ -5,10 +5,12 @@ import { connectToDatabase } from "../mongoose";
 import {
   AnswerVoteParams,
   CreateAnswerParams,
+  DeleteAnswerParams,
   GetAnswersParams,
 } from "./shared.types";
 import Question from "@/database/question.model";
 import { revalidatePath } from "next/cache";
+import Interaction from "@/database/interaction.model";
 
 export async function createAnswer(params: CreateAnswerParams) {
   try {
@@ -134,3 +136,38 @@ export async function downvoteAnswer(params: AnswerVoteParams) {
   }
 }
 // go to handlevote() in components > shared > Votes.tsx
+
+// delete answers
+export async function deleteAnswer(params: DeleteAnswerParams) {
+  try {
+    connectToDatabase();
+
+    const { answerId, path } = params;
+
+    const answer = await Answer.findById(answerId);
+    // we get the answer Id so that we can remove its existance from every where
+
+    if (!answer) {
+      throw new Error("Answer not found");
+    }
+
+    await answer.deleteOne({ _id: answerId });
+    // mark the selected answer for deletion
+
+    await Question.updateMany(
+      { _id: answer.question },
+      {
+        $pull: {
+          answers: answerId,
+        },
+      }
+    );
+    // Here we update the question by doing the following: we select the question id linked to the deleted answer and we pull the answer Id (deleted one) from the question model
+
+    await Interaction.deleteMany({ answer: answerId });
+    // we delete all answers references from the interaction model
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+  }
+}
