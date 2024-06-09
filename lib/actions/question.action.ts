@@ -271,3 +271,19 @@ export async function editQuestion(params: EditQuestionParams) {
     console.log(error);
   }
 }
+
+export async function getHotQuestions() {
+  try {
+    connectToDatabase();
+
+    const hotQuestions = await Question.find({})
+      .sort({ views: -1, upvotes: -1 })
+      .limit(5);
+    // so we went to question model, got all questions, and sorted it in descending order of views and upvotes and kept the limit to 5
+    return hotQuestions;
+    // go back to rightSideBar.tsx
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}

@@ -96,3 +96,23 @@ export async function getQuestionByTagId(params: GetQuestionsByTagIdParams) {
   }
 }
 // Go to app > (root) > tags > [id] > page.tsx.
+
+export async function getTopPopularTags() {
+  try {
+    connectToDatabase();
+
+    const getPopularTags = await Tag.aggregate([
+      { $project: { name: 1, numberOfQuestions: { $size: "$questions" } } },
+      // project here is used to reshape how we see our tag and what we want to get back
+      // here we want to get back the name property, and each tag will have a numberOfQuestions Property whose size is equal to questions i.e. number of questions in each tag
+      { $sort: { numberOfQuestions: -1 } }, // sort wrt to descending order i.e. most questions
+      { $limit: 5 }, // only 5 tags max
+    ]);
+
+    return getPopularTags;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+// go to right sidebar

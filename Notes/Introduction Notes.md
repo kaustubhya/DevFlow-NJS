@@ -1253,3 +1253,17 @@ const addNums = (a: number, b: number) => {
 
 addNums(14, 4) // => Now these are called arguments when we pass them
 ```
+
+🛑 Now we will work on showing the top questions, earlier we filled it with a demo number, but now we will connect it to the actual data from the backend.
+
+Go to RightSideBar.tsx, and call getHotQuestions
+
+But also first create it in questions.action.tsx
+
+🛑 Now we will work on showing the popular tags, earlier we filled it with a demo number, but now we will connect it to the actual data from the backend.
+
+Go to RightSideBar.tsx, and call getPopularTags
+
+But also first create it in tags.action.tsx
+
+Implement the action there
