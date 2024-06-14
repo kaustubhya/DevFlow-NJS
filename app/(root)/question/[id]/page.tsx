@@ -12,7 +12,7 @@ import Link from "next/link";
 import React from "react";
 import Voting from "@/components/shared/Votes";
 
-const Page = async ({ params }) => {
+const Page = async ({ params, searchParams }) => {
   // to get author's access in our Answer.tsx component, we can get author / userId from clerk
   const { userId: clerkId } = auth();
 
@@ -123,6 +123,8 @@ const Page = async ({ params }) => {
         questionId={result._id}
         userId={mongoUser._id}
         totalAnswers={result.answers.length}
+        page={searchParams?.page}
+        filter={searchParams?.filter}
       />
 
       {/* Now we will use a form to show an editor to answer our questions */}

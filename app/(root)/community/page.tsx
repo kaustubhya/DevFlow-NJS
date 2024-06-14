@@ -4,10 +4,16 @@ import Filter from "@/components/shared/Filter";
 import { getAllUsers } from "@/lib/actions/user.action";
 import Link from "next/link";
 import UserCard from "@/components/cards/UserCard";
+import { SearchParamsProps } from "@/types";
 
-const Page = async () => {
+const Page = async ({ searchParams }: SearchParamsProps) => {
   /* After making the getAllUsersParams function in users.actions.ts, we are back. Go to bottom in <section></section> */
-  const result = await getAllUsers({});
+  const result = await getAllUsers({
+    searchQuery: searchParams.q,
+    // for search query
+    filter: searchParams.filter,
+    // for filters
+  });
 
   return (
     <>

@@ -60,18 +60,18 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
 
   // This section is for edit question, actually we want to pre-populate the form while editing the question, i.e. the entered details should already be present while editing a question
   // Using react hook form for this
-  const parsedQuestionDetails = JSON.parse(questionDetails || "");
+  const parsedQuestionDetails = questionDetails && JSON.parse(questionDetails || '');
 
   // Now for tags, we want it to be implemented in such a way so that the input tag field is not populated but rather the fields below it is populated
-  const groupedTags = parsedQuestionDetails.tags.map((tag) => tag.name);
+  const groupedTags = parsedQuestionDetails?.tags.map((tag) => tag.name);
 
   // We will pull the below 2 functions into our questions component which is already existing
   // 1. Define your form., importing the formSchema aka QuestionsSchema
   const form = useForm<z.infer<typeof QuestionsSchema>>({
     resolver: zodResolver(QuestionsSchema),
     defaultValues: {
-      title: parsedQuestionDetails.title || "",
-      explaination: parsedQuestionDetails.content || "",
+      title: parsedQuestionDetails?.title || "",
+      explaination: parsedQuestionDetails?.content || "",
       tags: groupedTags || [],
       //  validation values took from lib > validations.tsx
     },
@@ -231,7 +231,7 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
                   }}
                   onBlur={field.onBlur} // This onBlur runs once we exit the editor and field.onBlur saves the values once we exit
                   onEditorChange={(content) => field.onChange(content)} // get the content from the editor and do field.onChange(content)
-                  initialValue={parsedQuestionDetails.content || ""}
+                  initialValue={parsedQuestionDetails?.content || ""}
                   init={{
                     height: 350,
                     menubar: false,

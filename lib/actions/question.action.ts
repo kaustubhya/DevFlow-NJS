@@ -19,6 +19,7 @@ import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
 import Answer from "@/database/answer.model";
 import Interaction from "@/database/interaction.model";
+import { FilterQuery } from "mongoose";
 // Creating our first action
 
 export async function getQuestions(params: GetQuestionsParams) {
@@ -28,12 +29,50 @@ export async function getQuestions(params: GetQuestionsParams) {
     // same process, connect to db
     connectToDatabase();
 
+    // LocalSearchBar
+    // Earlier we returned everything from params but now via searchQuery we can filter it
+    // We fetch the current query in the home page from search params
+
+    const { searchQuery, filter } = params;
+
+    const query: FilterQuery<typeof Question> = {};
+
+    if (searchQuery) {
+      // if we do have a search query, we can add to a search query
+      query.$or = [
+        { title: { $regex: new RegExp(searchQuery, "i") } },
+        // search across the title. Regex should match a new REGEXP with case insensitive
+        { content: { $regex: new RegExp(searchQuery, "i") } },
+        // search in content too
+      ];
+    }
+
+    // for filtering sorting
+    let sortOptions = {};
+
+    switch (filter) {
+      case "newest":
+        sortOptions = { createdAt: -1 };
+        break;
+
+      case "frequent":
+        sortOptions = { views: -1 };
+        break;
+
+      case "unanswered":
+        query.answers = { $size: 0 };
+        break;
+
+      default:
+        break;
+    }
+
     // just get questions for now (we donot have all params now)
-    const questions = await Question.find({})
+    const questions = await Question.find(query)
       // populate the questions with tags and author
       .populate({ path: "tags", model: Tag })
       .populate({ path: "author", model: User })
-      .sort({ createdAt: -1 }); // gets the newest added question to the top
+      .sort(sortOptions); // gets the questions according to the filters
 
     // mongo db generally for all fields does not keep actual values, it keeps only the references (say for tags). So to get the name from the reference value, we populate the value
 

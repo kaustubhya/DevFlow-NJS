@@ -1267,3 +1267,91 @@ Go to RightSideBar.tsx, and call getPopularTags
 But also first create it in tags.action.tsx
 
 Implement the action there
+
+---
+
+We will now implement the Local Search Functionality. This will allow us to search for our questions and posts.
+
+Good thing here is, whatever we search on this search bar will get updated in the URL
+
+This search bar will be shown in all pages
+
+Let us start with home page, add some questions (ask them).
+
+Then....
+
+Go to components > shared > search > LocalSearchBar.tsx
+
+`Query parameters` - Query parameters are a defined set of parameters (key-value pair) attached to the end of a URL used to provide additional information to a web server when making requests. They are an important part of the URL that define specific content or actions based on the data being passed.
+
+🛑🛑 Debouncing: LocalSearchBar.tsx
+
+To implement a debouncing function: go to lib > utils.tsx
+
+🛑🛑 We will use a query-string package here.
+
+Install it. This will help us in working with querries.
+
+We created 2 functions here, one to put up querries in the URL from the search bar, another to remove querries from the URL when we remove it in the search bar
+
+---
+
+Let us now integrate our LocalSearchBar in our HomePage
+
+Go to app > (root) > (home) > page.tsx
+
+---
+
+We will now implement this local search functionality in community page, go to: devflow\app\(root)\community\page.tsx
+
+And go to getAll() users in devflow\lib\actions\user.action.ts
+
+---
+
+Doing same in collections page: devflow\app\(root)\collection\page.tsx
+
+and getSavedQuestions() in devflow\lib\actions\user.action.ts
+
+---
+
+Working localsearch functionality in tags and tag details page now.
+
+Tags page: devflow\app\(root)\tags\page.tsx
+
+Go here next: devflow\lib\actions\tag.action.ts -> getAllTags()
+
+---
+
+We will now work on home filtering, for that we will go to HomeFilters.tsx
+
+First we just checked if the URL values were changing or not based on the Home Filters Tab Changes.
+
+Next we implemented the Filters in Home Page
+
+Now we are implementing Filters in the community page, go to filters.tsx from the community page.
+
+Next work on user.action.ts in getAllUsers()
+
+---
+
+Let us now work on collection page filters, go to devflow\app\(root)\collection\page.tsx
+
+Next go to user.action.ts -> getSavedQuestions
+
+To implement the filtering of tags, we go to app > root > tags > page.tsx
+
+Tag Filters can be sorted in Tag.action.ts
+
+---
+
+Now we implement the filters for answers, for that, go to devflow\app\(root)\question\[id]\page.tsx
+
+Filters are in AllAnswers.tsx
+
+---
+
+🛑🛑🛑 Pagination
+
+Make the component: components > shared > Pagination.tsx
+
+

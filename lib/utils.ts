@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import qs from 'query-string'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -127,3 +128,60 @@ export const getJoinedDate = (date: Date): string => {
 // Example usage:
 // const date = new Date();
 // console.log(getJoinedDate(date)); // Outputs something like "6-2024" if the current month is June and the year is 2024
+
+// Debouncing function
+interface URLQueryParams {
+  params: string;
+  key: string;
+  value: string | null;
+}
+
+export const formUrlQuery = ({params, key, value}: URLQueryParams) => {
+
+  // get access to the current URL
+  const currentUrl = qs.parse(params); // 🛑🛑 Used the query string package here
+
+  currentUrl[key] = value;
+  // extract the current url and update the new key as the value
+
+  return qs.stringifyUrl({
+    // url: 'https://foo.bar',
+    url: window.location.pathname, // get the base pathname
+    query: currentUrl,
+  },
+  {skipNull: true}
+// second object for the options, we donot need any null values
+)
+}
+// 🛑 This function checks what all previous url contents we have and updates only the specific content in the url we want to update
+
+
+
+interface removeUrlQueryParams {
+  params: string;
+  keysToRemove: string[];
+}
+
+export const removeKeysFromQuery = ({params, keysToRemove}: removeUrlQueryParams) => {
+
+  // get access to the current URL
+  const currentUrl = qs.parse(params); // 🛑🛑 Used the query string package here
+
+  keysToRemove.forEach((key) => {
+    delete currentUrl[key];
+  })
+
+  return qs.stringifyUrl({
+    // url: 'https://foo.bar',
+    url: window.location.pathname, // get the base pathname
+    query: currentUrl,
+  },
+  {skipNull: true}
+// second object for the options, we donot need any null values
+)
+}
+
+
+// go to local search bar.tsx
+
+

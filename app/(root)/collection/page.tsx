@@ -5,8 +5,11 @@ import NoResult from "@/components/shared/NoResult";
 import QuestionCard from "@/components/cards/QuestionCard";
 import { getSavedQuestions } from "@/lib/actions/user.action";
 import { auth } from "@clerk/nextjs/server";
+import { SearchParamsProps } from "@/types";
 
-export default async function Home() {
+
+export default async function Home({ searchParams }: SearchParamsProps) {
+
   // fetching saved questions from the database
   // let us go to lib > actions > user.action.ts and then come back
 
@@ -21,6 +24,10 @@ export default async function Home() {
   //   user exists
   const result = await getSavedQuestions({
     clerkId: userId,
+    searchQuery: searchParams.q,
+    // for search query
+    filter: searchParams.filter,
+    // for filter
   });
 
   return (

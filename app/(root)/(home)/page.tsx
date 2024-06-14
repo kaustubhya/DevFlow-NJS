@@ -7,15 +7,23 @@ import HomeFilters from "@/components/home/HomeFilters";
 import NoResult from "@/components/shared/NoResult";
 import QuestionCard from "@/components/cards/QuestionCard";
 import { getQuestions } from "@/lib/actions/question.action";
+import { SearchParamsProps } from "@/types";
+import Pagination from "@/components/shared/Pagination";
 
-export default async function Home() {
+export default async function Home({ searchParams }: SearchParamsProps) {
+  // for local search bar
   // fetching real questions from the database
   // let us first create the server action for this and then come back
 
   // we came back after make getQuestions method in question.action.ts
-  const result = await getQuestions({});
+  const result = await getQuestions({
+    searchQuery: searchParams.q,
+    // now see question.action.ts > getQuestions > LocalSearchBar comment code
 
-  // console.log(result.questions);
+    filter: searchParams.filter, // for home filters
+  });
+
+  // TODO: Fetch Recommended Questions
 
   return (
     <>
@@ -87,6 +95,8 @@ export default async function Home() {
           />
         )}
       </div>
+
+      <Pagination />
     </>
   );
 }

@@ -30,7 +30,6 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
     return [
       { _id: "1", name: "tag1" },
       { _id: "2", name: "tag2" },
-      { _id: "3", name: "tag3" },
     ];
   } catch (error) {
     console.log(error);
@@ -44,7 +43,37 @@ export async function getAllTags(params: GetAllTagsParams) {
   try {
     connectToDatabase();
 
-    const tags = await Tag.find({});
+    // local search
+    const { searchQuery, filter } = params;
+
+    const query: FilterQuery<typeof Tag> = {};
+
+    if (searchQuery) {
+      query.$or = [{ name: { $regex: new RegExp(searchQuery, "i") } }];
+      // works even when we type in CAPS
+    }
+
+    let sortOptions = {};
+
+    switch (filter) {
+      case "popular":
+        sortOptions = { questions: -1 };
+        break;
+      case "recent":
+        sortOptions = { createdAt: -1 };
+        break;
+      case "name":
+        sortOptions = { name: 1 }; // alphabetical order naming
+        break;
+      case "old":
+        sortOptions = { createdAt: 1 };
+        break;
+
+      default:
+        break;
+    }
+
+    const tags = await Tag.find(query).sort(sortOptions);
 
     return { tags };
   } catch (error) {
@@ -57,7 +86,7 @@ export async function getQuestionByTagId(params: GetQuestionsByTagIdParams) {
   try {
     connectToDatabase();
 
-    const { tagId, page = 1, pageSize = 10, searchQuery } = params;
+    const { tagId, searchQuery } = params;
 
     // logic is similar to saved questions
     // query
@@ -67,7 +96,7 @@ export async function getQuestionByTagId(params: GetQuestionsByTagIdParams) {
       path: "questions",
       model: Question,
       match: searchQuery
-        ? { title: { $regex: searchQuery, options: "i" } }
+        ? { title: { $regex: searchQuery, $options: "i" } }
         : {},
 
       //  since search query has to be a RegExp, we can check it sing conditionals, if there is nothing, return an empty string
