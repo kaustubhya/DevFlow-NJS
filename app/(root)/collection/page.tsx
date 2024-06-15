@@ -6,10 +6,9 @@ import QuestionCard from "@/components/cards/QuestionCard";
 import { getSavedQuestions } from "@/lib/actions/user.action";
 import { auth } from "@clerk/nextjs/server";
 import { SearchParamsProps } from "@/types";
-
+import Pagination from "@/components/shared/Pagination";
 
 export default async function Home({ searchParams }: SearchParamsProps) {
-
   // fetching saved questions from the database
   // let us go to lib > actions > user.action.ts and then come back
 
@@ -28,6 +27,8 @@ export default async function Home({ searchParams }: SearchParamsProps) {
     // for search query
     filter: searchParams.filter,
     // for filter
+    page: searchParams.page ? +searchParams.page : 1,
+    // for paging
   });
 
   return (
@@ -58,7 +59,7 @@ export default async function Home({ searchParams }: SearchParamsProps) {
       <div className="mt-10 flex w-full flex-col gap-6">
         {/* Looping through questions (array of objects at the start ↑) */}
         {result.questions.length > 0 ? (
-          result.questions.map((question) => (
+          result.questions.map((question:any) => (
             <QuestionCard
               key={question._id}
               // Since the key is not getting passed, let us pass the IDs too!
@@ -84,6 +85,12 @@ export default async function Home({ searchParams }: SearchParamsProps) {
             // This makes the No Results Component more usable for say Tags Page
           />
         )}
+      </div>
+      <div className="mt-10">
+        <Pagination
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          isNext={result.isNext}
+        />
       </div>
     </>
   );

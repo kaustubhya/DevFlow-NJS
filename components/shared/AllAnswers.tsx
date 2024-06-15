@@ -7,6 +7,7 @@ import Image from "next/image";
 import { getTimestamp } from "@/lib/utils";
 import ParseHTML from "./ParseHTML";
 import Voting from "./Votes";
+import Pagination from "./Pagination";
 
 interface Props {
   questionId: string;
@@ -23,11 +24,10 @@ const AllAnswers = async ({
   page,
   filter,
 }: Props) => {
-  const result = await getAnswers({ 
+  const result = await getAnswers({
     questionId,
-    page: page ? +page : 1, // +page converts string to number
-    sortBy: filter
-  
+    sortBy: filter,
+    page: page ? +page : 1,
   });
   return (
     <div className="mt-11">
@@ -90,6 +90,13 @@ const AllAnswers = async ({
             <ParseHTML data={answer.content} />
           </article>
         ))}
+      </div>
+      <div className="mt-10">
+        <Pagination
+          pageNumber={page ? +page : 1}
+          // 🛑 Here we are on a separate component, so no need to use searchParams here
+          isNext={result.isNextAnswer}
+        />
       </div>
     </div>
   );

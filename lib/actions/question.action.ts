@@ -33,7 +33,10 @@ export async function getQuestions(params: GetQuestionsParams) {
     // Earlier we returned everything from params but now via searchQuery we can filter it
     // We fetch the current query in the home page from search params
 
-    const { searchQuery, filter } = params;
+    const { searchQuery, filter, page = 1, pageSize = 4 } = params;
+
+    // Calculate the number of posts to skip based on the page number and the page size
+    const skipAmount = (page - 1) * pageSize;
 
     const query: FilterQuery<typeof Question> = {};
 
@@ -72,12 +75,17 @@ export async function getQuestions(params: GetQuestionsParams) {
       // populate the questions with tags and author
       .populate({ path: "tags", model: Tag })
       .populate({ path: "author", model: User })
+      .skip(skipAmount)
+      .limit(pageSize)
       .sort(sortOptions); // gets the questions according to the filters
 
     // mongo db generally for all fields does not keep actual values, it keeps only the references (say for tags). So to get the name from the reference value, we populate the value
 
+    const totalQuestions = await Question.countDocuments(query); // activate the next button by fetching the question count from the model
+    const isNext = totalQuestions > skipAmount + questions.length;
+
     // return the questions in an object as we want to add some additional stuff later on
-    return { questions };
+    return { questions, isNext };
   } catch (error) {
     console.log(error);
 

@@ -5,6 +5,7 @@ import { getAllUsers } from "@/lib/actions/user.action";
 import Link from "next/link";
 import UserCard from "@/components/cards/UserCard";
 import { SearchParamsProps } from "@/types";
+import Pagination from "@/components/shared/Pagination";
 
 const Page = async ({ searchParams }: SearchParamsProps) => {
   /* After making the getAllUsersParams function in users.actions.ts, we are back. Go to bottom in <section></section> */
@@ -13,6 +14,8 @@ const Page = async ({ searchParams }: SearchParamsProps) => {
     // for search query
     filter: searchParams.filter,
     // for filters
+    page: searchParams.page ? +searchParams.page : 1, // convert it to a number
+    // for params
   });
 
   return (
@@ -55,6 +58,13 @@ const Page = async ({ searchParams }: SearchParamsProps) => {
           </div>
         )}
       </section>
+
+      <div>
+        <Pagination
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          isNext={result.isNext}
+        />
+      </div>
     </>
   );
 };

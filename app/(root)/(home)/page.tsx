@@ -21,6 +21,8 @@ export default async function Home({ searchParams }: SearchParamsProps) {
     // now see question.action.ts > getQuestions > LocalSearchBar comment code
 
     filter: searchParams.filter, // for home filters
+
+    page: searchParams.page ? +searchParams.page : 1, // for pagination
   });
 
   // TODO: Fetch Recommended Questions
@@ -95,8 +97,12 @@ export default async function Home({ searchParams }: SearchParamsProps) {
           />
         )}
       </div>
-
-      <Pagination />
+      <div className="mt-10">
+        <Pagination 
+        pageNumber={searchParams?.page ? +searchParams.page : 1}
+        isNext={result.isNext}
+        />
+      </div>
     </>
   );
 }

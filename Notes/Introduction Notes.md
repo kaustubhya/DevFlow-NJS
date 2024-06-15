@@ -1354,4 +1354,47 @@ Filters are in AllAnswers.tsx
 
 Make the component: components > shared > Pagination.tsx
 
+We will now make pagination for all other pages
 
+1. Community Page
+
+Use these for all pagination
+
+```javascript
+
+
+<div className="mt-10">
+  <Pagination
+  pageNumber={searchParams?.page ? +searchParams.page : 1}
+  isNext={result.isNext}
+  />
+</div>
+
+
+    page: searchParams.page ? +searchParams.page : 1,
+    // for paging
+
+    const { searchQuery, filter, page = 1, pageSize = 4 } = params;
+    const skipAmount = (page - 1) * pageSize;
+      .skip(skipAmount)
+      .limit(pageSize)
+    const totalQuestions = await Question.countDocuments(query); // activate the next button by fetching the question count from the model
+    const isNext = totalQuestions > skipAmount + questions.length;
+    return { questions, isNext };
+```
+
+2. Collections Page
+
+3. Tags Page
+
+4. Question Details Page
+
+5. Profile Page in User Questions and User Answers
+
+---
+
+🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑 
+
+Creating the Global Search Component Now
+
+Go to GlobalSearch.tsx
