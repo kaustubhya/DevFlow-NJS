@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
@@ -25,6 +25,35 @@ const GlobalSearch = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   // here we are checking if the global search bar is open or not
+
+  const searchContainerRef = useRef(null)
+
+  // closing the global search bar when we click on anywhere outside of the search bar box
+  useEffect(() => {
+    const handleOutsideClick = (event: any) => {
+      if(searchContainerRef.current 
+        && 
+        // @ts-ignore
+        !searchContainerRef.current.contains(event.target) 
+        // It means we clicked outside of the box
+      ){
+        setIsOpen(false);
+        setSearch(``);
+      }
+
+    }
+
+    setIsOpen(false);
+    // manually closing the searchbar whenever the pathname changes (searchbar will close automatically when we re-navigate)
+
+    document.addEventListener("click", handleOutsideClick);
+
+    // we need to clear out all the event Listeners that we use inside the useEffect
+    return () => {
+      document.removeEventListener("click", handleOutsideClick)
+    }
+  }, [])
+
 
   // for search bar to query change in url effect
   useEffect(() => {
@@ -65,11 +94,8 @@ const GlobalSearch = () => {
   }, [search, router, pathname, searchParams, query]);
 
 
-
-
-
   return (
-    <div className="relative w-full max-w-[600px] max-lg:hidden">
+    <div className="relative w-full max-w-[600px] max-lg:hidden" ref={searchContainerRef}>
       <div className="background-light800_darkgradient relative flex min-h-[56px] grow items-center gap-1 rounded-xl px-4">
         <Image
           src="/assets/icons/search.svg"

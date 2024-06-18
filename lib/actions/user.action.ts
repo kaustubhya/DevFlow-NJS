@@ -321,7 +321,7 @@ export async function getUserQuestions(params: GetUserStatsParams) {
 
     // achieve pagination
     const userQuestions = await Question.find({ author: userId })
-      .sort({ views: -1, upvotes: -1 })
+      .sort({ createdAt: -1 , views: -1, upvotes: -1}) // the one placed here will have the highest effect
       .skip(skipAmount)
       .limit(pageSize)
       .populate("tags", "_id name")

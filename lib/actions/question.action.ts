@@ -148,13 +148,23 @@ export async function createQuestion(params: CreateQuestionParams) {
 
     // Create an interaction record for the user's ask_question (track the user who created this question)
 
+    // Interaction:
+    await Interaction.create({
+      user: author,
+      action: "ask_question",
+      question: question._id,
+      tags: tagDocuments,
+    })
     // first we need to create a user into the database based on the user modal
 
     // Increment the user's reputation by 5 points who created this question
-
+    // Working on reputation now:
+    await User.findByIdAndUpdate(author, {$inc: {reputation: 5}})
     revalidatePath(path);
     // this avoids us the need to reload the site when we post a question and it does not appear on the home page when redirected
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 // to trigger the async action, import this in our Question.tsx page, go there
@@ -216,7 +226,17 @@ export async function upvoteQuestion(params: QuestionVoteParams) {
       throw new Error("Question not found!!");
     }
 
-    // Increment the author's reputation when he gets an upvote to a quesiton
+    // Increment the author's reputation by +1 for upvoting, -1 for removing his upvote from a question
+    await User.findByIdAndUpdate(userId, {
+      $inc: {reputation: hasupVoted ? -1 : 1}
+    })
+
+    // Increment the author's reputation by +10 for receiving an upvote, and -10 for receiving a downvote
+
+    await User.findByIdAndUpdate(question.author, {
+      $inc: {reputation: hasupVoted ? -10 : 10}
+    })
+
     revalidatePath(path);
   } catch (error) {
     console.log(error);
@@ -256,7 +276,16 @@ export async function downvoteQuestion(params: QuestionVoteParams) {
       throw new Error("Question not found!!");
     }
 
-    // Increment the author's reputation when he gets an upvote to a quesiton
+          // Reduce the author's reputation by -1 for downvoting, +1 for removing his downvote from a question
+          await User.findByIdAndUpdate(userId, {
+            $inc: { reputation: hasdownVoted ? -2 : 2 },
+          });
+      
+          // Reduce the author's reputation by -10 for receiving a downvote, and +10 for receiving an upvote
+          await User.findByIdAndUpdate(question.author, {
+            $inc: { reputation: hasdownVoted ? -10 : 10 },
+          });
+
     revalidatePath(path);
   } catch (error) {
     console.log(error);

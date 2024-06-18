@@ -1393,8 +1393,28 @@ Use these for all pagination
 
 ---
 
-🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑 
+🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑
 
 Creating the Global Search Component Now
 
 Go to GlobalSearch.tsx
+
+From there we will work on GLobalResults.tsx
+
+For the loader we will use this package:
+
+`npm install @radix-ui/react-icons`
+
+Shad cn is built on top of radix ui
+
+Now for the Global Search Bar Filters, we will need the GlobalFilters.tsx
+
+🛑🛑🛑🛑 To make our global search actions, we have to go to: lib > actions > general.action.ts
+
+general actions -> global actions
+
+---
+
+✅✅ Let us now start working on our logic of creating reputations
+
+go to lib > actions > question.action.ts > createQuestion()
