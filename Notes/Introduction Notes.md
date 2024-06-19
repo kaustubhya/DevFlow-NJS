@@ -1417,4 +1417,23 @@ general actions -> global actions
 
 ✅✅ Let us now start working on our logic of creating reputations
 
+For questions:
 go to lib > actions > question.action.ts > createQuestion()
+
+similarly, implement logic for upvote question, downvote question
+
+Now for answers:
+
+go to lib > actions > answer.action.ts > createAnswer()
+
+Also do the same for answer.action.ts
+
+---
+
+Now for badges, we can do: lib > actions > user.action.ts > getUserInfo
+
+---
+
+Working on AI answer now, go to components > forms > Answer.tsx
+
+Now go to api/chatgpt/route.ts

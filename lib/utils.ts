@@ -1,6 +1,8 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import qs from 'query-string'
+import qs from "query-string";
+import { BADGE_CRITERIA } from "@/constants";
+import { BadgeCounts } from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -136,52 +138,80 @@ interface URLQueryParams {
   value: string | null;
 }
 
-export const formUrlQuery = ({params, key, value}: URLQueryParams) => {
-
+export const formUrlQuery = ({ params, key, value }: URLQueryParams) => {
   // get access to the current URL
   const currentUrl = qs.parse(params); // 🛑🛑 Used the query string package here
 
   currentUrl[key] = value;
   // extract the current url and update the new key as the value
 
-  return qs.stringifyUrl({
-    // url: 'https://foo.bar',
-    url: window.location.pathname, // get the base pathname
-    query: currentUrl,
-  },
-  {skipNull: true}
-// second object for the options, we donot need any null values
-)
-}
+  return qs.stringifyUrl(
+    {
+      // url: 'https://foo.bar',
+      url: window.location.pathname, // get the base pathname
+      query: currentUrl,
+    },
+    { skipNull: true }
+    // second object for the options, we donot need any null values
+  );
+};
 // 🛑 This function checks what all previous url contents we have and updates only the specific content in the url we want to update
-
-
 
 interface removeUrlQueryParams {
   params: string;
   keysToRemove: string[];
 }
 
-export const removeKeysFromQuery = ({params, keysToRemove}: removeUrlQueryParams) => {
-
+export const removeKeysFromQuery = ({
+  params,
+  keysToRemove,
+}: removeUrlQueryParams) => {
   // get access to the current URL
   const currentUrl = qs.parse(params); // 🛑🛑 Used the query string package here
 
   keysToRemove.forEach((key) => {
     delete currentUrl[key];
-  })
+  });
 
-  return qs.stringifyUrl({
-    // url: 'https://foo.bar',
-    url: window.location.pathname, // get the base pathname
-    query: currentUrl,
-  },
-  {skipNull: true}
-// second object for the options, we donot need any null values
-)
-}
-
+  return qs.stringifyUrl(
+    {
+      // url: 'https://foo.bar',
+      url: window.location.pathname, // get the base pathname
+      query: currentUrl,
+    },
+    { skipNull: true }
+    // second object for the options, we donot need any null values
+  );
+};
 
 // go to local search bar.tsx
 
+interface BadgeParam {
+  criteria: {
+    type: keyof typeof BADGE_CRITERIA;
+    count: number;
+  }[];
+}
 
+export const assignBadges = (params: BadgeParam) => {
+  const badgeCounts: BadgeCounts = {
+    GOLD: 0,
+    SILVER: 0,
+    BRONZE: 0,
+  };
+
+  const { criteria } = params;
+
+  criteria.forEach((item) => {
+    const {type, count} = item;
+    const badgeLevels: any = BADGE_CRITERIA[type];
+
+    Object.keys(badgeLevels).forEach((level: any) => {
+      if(count >= badgeLevels[level]) {
+        badgeCounts[level as keyof BadgeCounts] += 1;
+      }
+    })
+  })
+
+  return badgeCounts;
+};

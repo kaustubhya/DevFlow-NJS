@@ -87,8 +87,11 @@ const Page = async ({ params, searchParams }: URLProps) => {
       </div>
       {/* Stats */}
       <Stats
+      reputation={userInfo.reputation}
         totalQuestions={userInfo.totalQuestions}
         totalAnswers={userInfo.totalAnswers}
+        // profile badges
+        badges={userInfo.badgeCounts}
       />
       {/* Tabs */}
       <div className="mt-10 flex gap-10">

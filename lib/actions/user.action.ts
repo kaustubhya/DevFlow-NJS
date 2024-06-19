@@ -17,6 +17,8 @@ import {
 import { revalidatePath } from "next/cache";
 import Question from "@/database/question.model";
 import Answer from "@/database/answer.model";
+import { BadgeCriteriaType } from "@/types";
+import { assignBadges } from "../utils";
 
 // make an async function
 // pass params as arguments
@@ -126,7 +128,6 @@ export async function getAllUsers(params: GetAllUsersParams) {
 
     const { searchQuery, filter, page = 1, pageSize = 4 } = params;
     const skipAmount = (page - 1) * pageSize;
-    
 
     const query: FilterQuery<typeof User> = {};
 
@@ -156,14 +157,14 @@ export async function getAllUsers(params: GetAllUsersParams) {
         break;
     }
 
-    const users = await User.find(query).sort(sortOptions) // get users based on different filters
-    .skip(skipAmount)
-    .limit(pageSize)
+    const users = await User.find(query)
+      .sort(sortOptions) // get users based on different filters
+      .skip(skipAmount)
+      .limit(pageSize);
 
-  const totalUsers = await User.countDocuments(query); // activate the next button by fetching the question count from the model
-  const isNext = totalUsers > skipAmount + users.length;
-  return { users, isNext };
-
+    const totalUsers = await User.countDocuments(query); // activate the next button by fetching the question count from the model
+    const isNext = totalUsers > skipAmount + users.length;
+    return { users, isNext };
   } catch (error) {
     console.log(error);
     throw error;
@@ -216,7 +217,6 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
     const { clerkId, searchQuery, filter, page = 1, pageSize = 1 } = params;
     const skipAmount = (page - 1) * pageSize;
 
-
     // query
     const query: FilterQuery<typeof Question> = searchQuery
       ? { title: { $regex: new RegExp(searchQuery, "i") } }
@@ -231,16 +231,16 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
       case "most_recent":
         sortOptions = { createdAt: -1 };
         break;
-      case "oldest" :
+      case "oldest":
         sortOptions = { createdAt: 1 };
         break;
-      case "most_voted": 
+      case "most_voted":
         sortOptions = { upvotes: -1 };
         break;
-      case "most_viewed": 
+      case "most_viewed":
         sortOptions = { views: -1 };
         break;
-      case "most_answered": 
+      case "most_answered":
         sortOptions = { answers: -1 };
         break;
 
@@ -262,7 +262,6 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
       ],
     });
 
-    
     const isNext = user.saved.length > pageSize;
 
     if (!user) {
@@ -295,10 +294,82 @@ export async function getUserInfo(params: GetUserByIdParams) {
     const totalQuestions = await Question.countDocuments({ author: user._id });
     const totalAnswers = await Answer.countDocuments({ author: user._id });
 
+    // let us work on badges, ([] => destructuring the array, 1st item gives us the number of upvotes)
+    const [questionUpvotes] = await Question.aggregate([
+      { $match: { author: user._id } },
+      {
+        $project: {
+          _id: 0,
+          upvotes: { $size: "$upvotes" },
+        },
+      },
+
+      // now group them
+      {
+        $group: {
+          _id: null,
+          totalUpvotes: { $sum: "$upvotes" },
+      }}
+    ]);
+    // aggregate: matching multiple things, grouping them together and then getting the upvote from that
+
+    const [answerUpvotes] = await Answer.aggregate([
+      { $match: { author: user._id } },
+      {
+        $project: {
+          _id: 0,
+          upvotes: { $size: "$upvotes" },
+        },
+      },
+
+      // now group them
+      {
+        $group: {
+          _id: null,
+          totalUpvotes: { $sum: "$upvotes" },
+        },
+      },
+    ]);
+
+    const [questionViews] = await Answer.aggregate([
+      { $match: { author: user._id } },
+
+      // now group them
+      {
+        $group: {
+          _id: null,
+          totalUpvotes: { $sum: "$upvotes" },
+        },
+      },
+    ]);
+
+    const criteria = [
+      { type: "QUESTION_COUNT" as BadgeCriteriaType, count: totalQuestions },
+      { type: "ANSWER_COUNT" as BadgeCriteriaType, count: totalAnswers },
+      {
+        type: "QUESTION_UPVOTES" as BadgeCriteriaType,
+        count: questionUpvotes?.totalUpvotes || 0,
+      },
+      {
+        type: "ANSWER_UPVOTES" as BadgeCriteriaType,
+        count: answerUpvotes?.totalUpvotes || 0,
+      },
+      {
+        type: "TOTAL_VIEWS" as BadgeCriteriaType,
+        count: questionViews.totalViews || 0,
+      },
+    ];
+    // Aggregate -> Take everything and reduce it to a single value (just like the JavaScript reduce function)
+
+    const badgeCounts = assignBadges({ criteria });
+    // go to utils.ts
+
     return {
       user,
       totalQuestions,
       totalAnswers,
+      badgeCounts,
+      reputation: user.reputation,
     };
   } catch (error) {
     console.log(error);
@@ -321,7 +392,7 @@ export async function getUserQuestions(params: GetUserStatsParams) {
 
     // achieve pagination
     const userQuestions = await Question.find({ author: userId })
-      .sort({ createdAt: -1 , views: -1, upvotes: -1}) // the one placed here will have the highest effect
+      .sort({ createdAt: -1, views: -1, upvotes: -1 }) // the one placed here will have the highest effect
       .skip(skipAmount)
       .limit(pageSize)
       .populate("tags", "_id name")
@@ -331,7 +402,6 @@ export async function getUserQuestions(params: GetUserStatsParams) {
     const isNextQuestions = totalQuestions > skipAmount + userQuestions.length;
 
     return { totalQuestions, questions: userQuestions, isNextQuestions };
-
   } catch (error) {
     console.log(error);
     throw error;
