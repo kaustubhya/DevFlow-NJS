@@ -7,6 +7,7 @@ import { getSavedQuestions } from "@/lib/actions/user.action";
 import { auth } from "@clerk/nextjs/server";
 import { SearchParamsProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
+// import Loading from "./loading";
 
 export default async function Home({ searchParams }: SearchParamsProps) {
   // fetching saved questions from the database
@@ -31,6 +32,10 @@ export default async function Home({ searchParams }: SearchParamsProps) {
     // for paging
   });
 
+    // loading testing
+  // const isLoading = true;
+
+  // if(isLoading) return <Loading />
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">Saved Questions</h1>

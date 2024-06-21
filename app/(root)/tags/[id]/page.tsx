@@ -6,6 +6,7 @@ import { IQuestion } from "@/database/question.model";
 import { getQuestionByTagId } from "@/lib/actions/tag.action";
 import { URLProps } from "@/types";
 import React from "react";
+// import Loading from './loading'
 
 // All of our detail pages (the pages with dynamic routes get some information from search params) so let us get those search params
 const Page = async ({ params, searchParams }: URLProps) => {
@@ -14,6 +15,10 @@ const Page = async ({ params, searchParams }: URLProps) => {
     searchQuery: searchParams.q,
     page: searchParams.page ? +searchParams.page : 1,
   });
+
+  // const isLoading = true;
+
+  // if (isLoading) return <Loading />;
 
   return (
     //   UI is similar to collections page

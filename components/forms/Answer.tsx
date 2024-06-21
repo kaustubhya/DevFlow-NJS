@@ -19,6 +19,8 @@ import { Button } from "../ui/button";
 import Image from "next/image";
 import { createAnswer } from "@/lib/actions/answer.action";
 import { usePathname } from "next/navigation";
+import { toast } from "../ui/use-toast";
+
 
 interface Props {
   question: string;
@@ -82,6 +84,11 @@ const Answer = ({ question, questionId, authorId }: Props) => {
       setIsSubmitting(false);
       // whatever happens, any errors or something else, setIsSubmitting to false
     }
+
+    toast({
+      title: `Answer is ${!isSubmitting ? 'Submitted' : ''}`,
+      variant: !isSubmitting ? 'default' : 'destructive'
+    })
   };
 
   const generateAIAnswer = async () => {
@@ -117,6 +124,11 @@ const Answer = ({ question, questionId, authorId }: Props) => {
     } finally {
       setIsSubmittingAI(false);
     }
+
+    toast({
+      title: `AI Answer is ${!isSubmittingAI ? 'Created' : ''}`,
+      variant: !isSubmitting ? 'default' : 'destructive'
+    })
   };
 
   return (

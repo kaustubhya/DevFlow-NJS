@@ -34,6 +34,8 @@ import Image from "next/image";
 import { createQuestion, editQuestion } from "@/lib/actions/question.action";
 import { useRouter, usePathname } from "next/navigation";
 import { useTheme } from "@/context/ThemeProvider";
+import { toast } from "../ui/use-toast";
+
 
 // Prop from ask a question > page.tsx
 
@@ -128,7 +130,15 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
       // it always runs on any condition - true or false
       setIsSubmitting(false);
     }
+    toast({
+      title: `Question is ${!isSubmitting ? 'Created' : ''}`,
+      variant: !isSubmitting ? 'default' : 'destructive'
+    })
   }
+
+  
+
+  
 
   // for manipulating tags, we have created an event, see the front end code below
   const handleInputKeyDown = (

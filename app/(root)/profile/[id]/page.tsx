@@ -12,11 +12,17 @@ import ProfileLinks from "@/components/shared/ProfileLinks";
 import Stats from "@/components/shared/Stats";
 import QuestionsTab from "@/components/shared/QuestionsTab";
 import AnswersTab from "@/components/shared/AnswersTab";
+// import Loading from './loading'
 
 const Page = async ({ params, searchParams }: URLProps) => {
   // Now the user Id mentioned below and the userInfo here can be different, so let us compare them
   const { userId: clerkId } = auth();
   const userInfo = await getUserInfo({ userId: params.id });
+
+  // loading testing
+  // const isLoading = true;
+
+  // if (isLoading) return <Loading />;
   return (
     <>
       <div className="flex flex-col-reverse items-start justify-between sm:flex-row">
@@ -87,7 +93,7 @@ const Page = async ({ params, searchParams }: URLProps) => {
       </div>
       {/* Stats */}
       <Stats
-      reputation={userInfo.reputation}
+        reputation={userInfo.reputation}
         totalQuestions={userInfo.totalQuestions}
         totalAnswers={userInfo.totalAnswers}
         // profile badges

@@ -18,6 +18,8 @@ import { Textarea } from "../ui/textarea";
 import { ProfileSchema } from "@/lib/validations";
 import { usePathname, useRouter } from "next/navigation";
 import { updateUser } from "@/lib/actions/user.action";
+import { toast } from "../ui/use-toast";
+
 
 interface Props {
   clerkId: string;
@@ -81,6 +83,10 @@ const Profile = ({ clerkId, user }: Props) => {
       // stop the loading
       setIsSubmitting(false);
     }
+    toast({
+      title: `Your profile is ${!isSubmitting ? 'Edited' : ''}`,
+      variant: !isSubmitting ? 'default' : 'destructive'
+    })
   }
 
   return (

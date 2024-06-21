@@ -1437,3 +1437,23 @@ Now for badges, we can do: lib > actions > user.action.ts > getUserInfo
 Working on AI answer now, go to components > forms > Answer.tsx
 
 Now go to api/chatgpt/route.ts
+
+---
+
+Finally for our site, we will make the loading page.
+
+Always keep the file name as loading.tsx for this purpose.
+
+First go to app > (root) > (home) > loading.tsx.
+
+🛑 We will use a skeletons component from Shadcn UI for this.
+
+Doing the community page now.
+
+And then the collections, profile, tags, tag details page
+
+---
+
+Finally doing the toasts, use the toaster component of Shadcn for this purpose.
+
+Go to app > (root) > layout.tsx for this

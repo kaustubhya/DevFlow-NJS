@@ -9,6 +9,12 @@ import QuestionCard from "@/components/cards/QuestionCard";
 import { getQuestions } from "@/lib/actions/question.action";
 import { SearchParamsProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
+// import Loading from './loading';
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Home | DevFlow',
+}
 
 export default async function Home({ searchParams }: SearchParamsProps) {
   // for local search bar
@@ -26,6 +32,11 @@ export default async function Home({ searchParams }: SearchParamsProps) {
   });
 
   // TODO: Fetch Recommended Questions
+
+
+  // for skeleton loading testing
+  // const isLoading = true;
+  // if(isLoading) return <Loading />
 
   return (
     <>

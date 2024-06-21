@@ -6,6 +6,14 @@ import Link from "next/link";
 import UserCard from "@/components/cards/UserCard";
 import { SearchParamsProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
+// import Loading from "./loading";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: `Community | DevFlow`,
+  description: `One of the best developer communities in the world`,
+}
+
 
 const Page = async ({ searchParams }: SearchParamsProps) => {
   /* After making the getAllUsersParams function in users.actions.ts, we are back. Go to bottom in <section></section> */
@@ -17,6 +25,11 @@ const Page = async ({ searchParams }: SearchParamsProps) => {
     page: searchParams.page ? +searchParams.page : 1, // convert it to a number
     // for params
   });
+
+  // loading testing
+  // const isLoading = true;
+
+  // if(isLoading) return <Loading />
 
   return (
     <>
