@@ -1479,3 +1479,5 @@ Now we will update our packages, for this we will use an npm package called "npm
 To run it: type `ncu`
 
 To update packages, do `ncu -u` then `npm install`
+
+Done!!
