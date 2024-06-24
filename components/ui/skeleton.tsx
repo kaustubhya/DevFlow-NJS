@@ -1,8 +1,10 @@
 import { cn } from "@/lib/utils"
 
 function Skeleton({
+  // @ts-ignore
   className,
   ...props
+// eslint-disable-next-line no-undef
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
