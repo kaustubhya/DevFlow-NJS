@@ -43,46 +43,44 @@ const AllAnswers = async ({
           <article key={answer._id} className="light-border border-b py-10">
             {/* article is similar to a div */}
 
-            <div className="flex items-center justify-between">
-              {/* Span ID Identifier */}
-              <div className="mb-8 flex flex-col-reverse justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
-                <Link
-                  href={`/profile/${answer.author.clerkId}`}
-                  className="flex flex-1 items-start gap-1 sm:items-center"
-                >
-                  <Image
-                    src={answer.author.picture}
-                    width={18}
-                    height={18}
-                    alt="profile pic"
-                    className="rounded-full object-cover max-sm:mt-0.5"
-                  />
-                  <div className="flex flex-col sm:flex-row sm:items-center">
-                    <p className="body-semibold text-dark300_light700">
-                      {answer.author.name}{" "}
-                    </p>
+            {/* Span ID Identifier */}
+            <div className="mb-8 flex flex-col-reverse justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
+              <Link
+                href={`/profile/${answer.author.clerkId}`}
+                className="flex flex-1 items-start gap-1 sm:items-center"
+              >
+                <Image
+                  src={answer.author.picture}
+                  width={18}
+                  height={18}
+                  alt="profile pic"
+                  className="rounded-full object-cover max-sm:mt-0.5"
+                />
+                <div className="flex flex-col sm:flex-row sm:items-center">
+                  <p className="body-semibold text-dark300_light700">
+                    {answer.author.name}{" "}
+                  </p>
 
-                    <p className="small-regular text-light400_light500 mt-0.5 line-clamp-1">
-                      <span className="ml-1.5 max-sm:hidden"> | </span> answered{" "}
-                      {getTimestamp(answer.createdAt)}
-                    </p>
-                  </div>
-                </Link>
-                <div className="flex justify-end">
-                  <Voting
-                    type="Answer"
-                    itemId={JSON.stringify(answer._id)}
-                    userId={JSON.stringify(userId)}
-                    upvotes={answer.upvotes.length}
-                    // has the user himself upvoted the answer -> checking by if the current answer includes the id of the author
-                    hasupVoted={answer.upvotes.includes(userId)}
-                    downvotes={answer.downvotes.length}
-                    // has the user himself downvoted the answer -> checking by if the current answer includes the id of the author
-                    hasdownVoted={answer.downvotes.includes(userId)}
-
-                    // go to components > shared > Votes.tsx
-                  />
+                  <p className="small-regular text-light400_light500 mt-0.5 line-clamp-1">
+                    <span className="ml-1.5 max-sm:hidden"> | </span> answered{" "}
+                    {getTimestamp(answer.createdAt)}
+                  </p>
                 </div>
+              </Link>
+              <div className="flex justify-end">
+                <Voting
+                  type="Answer"
+                  itemId={JSON.stringify(answer._id)}
+                  userId={JSON.stringify(userId)}
+                  upvotes={answer.upvotes.length}
+                  // has the user himself upvoted the answer -> checking by if the current answer includes the id of the author
+                  hasupVoted={answer.upvotes.includes(userId)}
+                  downvotes={answer.downvotes.length}
+                  // has the user himself downvoted the answer -> checking by if the current answer includes the id of the author
+                  hasdownVoted={answer.downvotes.includes(userId)}
+
+                  // go to components > shared > Votes.tsx
+                />
               </div>
             </div>
 

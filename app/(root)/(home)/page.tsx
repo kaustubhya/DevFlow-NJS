@@ -6,33 +6,54 @@ import Link from "next/link";
 import HomeFilters from "@/components/home/HomeFilters";
 import NoResult from "@/components/shared/NoResult";
 import QuestionCard from "@/components/cards/QuestionCard";
-import { getQuestions } from "@/lib/actions/question.action";
+import {
+  getQuestions,
+  getRecommendedQuestions,
+} from "@/lib/actions/question.action";
 import { SearchParamsProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
+import { auth } from "@clerk/nextjs/server";
 // import Loading from './loading';
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Home | DevFlow',
-}
+  title: "Home | DevFlow",
+};
 
 export default async function Home({ searchParams }: SearchParamsProps) {
   // for local search bar
   // fetching real questions from the database
   // let us first create the server action for this and then come back
 
-  // we came back after make getQuestions method in question.action.ts
-  const result = await getQuestions({
-    searchQuery: searchParams.q,
-    // now see question.action.ts > getQuestions > LocalSearchBar comment code
+  const { userId } = auth();
 
-    filter: searchParams.filter, // for home filters
+  let result;
 
-    page: searchParams.page ? +searchParams.page : 1, // for pagination
-  });
+  if (searchParams?.filter === "recommended") {
+    if (userId) {
+      result = await getRecommendedQuestions({
+        userId,
+        searchQuery: searchParams.q,
+        page: searchParams.page ? +searchParams.page : 1, // for pagination
+      });
+    }
+    else {
+      result = {
+        questions: [],
+        isNext: false, // for no pagination
+      };
+    }
+  } else {
+    // we came back after make getQuestions method in question.action.ts
+    result = await getQuestions({
+      searchQuery: searchParams.q,
+      // now see question.action.ts > getQuestions > LocalSearchBar comment code
 
-  // TODO: Fetch Recommended Questions
+      filter: searchParams.filter, // for home filters
 
+      page: searchParams.page ? +searchParams.page : 1, // for pagination
+    });
+  }
 
   // for skeleton loading testing
   // const isLoading = true;
@@ -109,9 +130,9 @@ export default async function Home({ searchParams }: SearchParamsProps) {
         )}
       </div>
       <div className="mt-10">
-        <Pagination 
-        pageNumber={searchParams?.page ? +searchParams.page : 1}
-        isNext={result.isNext}
+        <Pagination
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          isNext={result.isNext}
         />
       </div>
     </>

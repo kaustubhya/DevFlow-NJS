@@ -14,6 +14,7 @@ interface QuestionProps {
     name: string;
   }[];
   author: {
+    clerkId: string;
     _id: string;
     name: string;
     picture: string;
@@ -35,7 +36,8 @@ const QuestionCard = ({
   views,
   answers,
   createdAt,
-  clerkId, // used in questionstab.tsx and answerstab.tsx
+  clerkId, 
+  // used in questionstab.tsx and answerstab.tsx
 }: QuestionProps) => {
   const showActionButtons = clerkId && clerkId === author.clerkId;
   // checking if we are the authors of the question or not, if yes then only we will get to see the edit and delete question button
@@ -92,31 +94,31 @@ const QuestionCard = ({
           textStyles="body-medium text-dark400_light700"
         />
 
-        {/* <div className="flex items-center gap-3 max-sm:flex-wrap max-sm:justify-start"> */}
-        <Metric
-          imgUrl="/assets/icons/like.svg"
-          alt="Upvotes"
-          value={formatAndDivideNumber(upvotes.length)}
-          title=" Votes" // give spaces here
-          textStyles="small-medium text-dark400_light800"
-        />
+        <div className="flex items-center gap-3 max-sm:flex-wrap max-sm:justify-start">
+          <Metric
+            imgUrl="/assets/icons/like.svg"
+            alt="Upvotes"
+            value={formatAndDivideNumber(upvotes.length)}
+            title=" Votes" // give spaces here
+            textStyles="small-medium text-dark400_light800"
+          />
 
-        <Metric
-          imgUrl="/assets/icons/message.svg"
-          alt="message"
-          value={formatAndDivideNumber(answers.length)}
-          title=" Answers" // give spaces here
-          textStyles="small-medium text-dark400_light800"
-        />
+          <Metric
+            imgUrl="/assets/icons/message.svg"
+            alt="message"
+            value={formatAndDivideNumber(answers.length)}
+            title=" Answers" // give spaces here
+            textStyles="small-medium text-dark400_light800"
+          />
 
-        <Metric
-          imgUrl="/assets/icons/eye.svg"
-          alt="eye"
-          value={formatAndDivideNumber(views)}
-          title=" Views" // give spaces here
-          textStyles="small-medium text-dark400_light800"
-        />
-        {/* </div> */}
+          <Metric
+            imgUrl="/assets/icons/eye.svg"
+            alt="eye"
+            value={formatAndDivideNumber(views)}
+            title=" Views" // give spaces here
+            textStyles="small-medium text-dark400_light800"
+          />
+        </div>
       </div>
     </div>
   );

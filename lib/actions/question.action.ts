@@ -14,6 +14,7 @@ import {
   GetQuestionByIdParams,
   GetQuestionsParams,
   QuestionVoteParams,
+  RecommendedParams,
 } from "./shared.types";
 import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
@@ -154,12 +155,12 @@ export async function createQuestion(params: CreateQuestionParams) {
       action: "ask_question",
       question: question._id,
       tags: tagDocuments,
-    })
+    });
     // first we need to create a user into the database based on the user modal
 
     // Increment the user's reputation by 5 points who created this question
     // Working on reputation now:
-    await User.findByIdAndUpdate(author, {$inc: {reputation: 5}})
+    await User.findByIdAndUpdate(author, { $inc: { reputation: 5 } });
     revalidatePath(path);
     // this avoids us the need to reload the site when we post a question and it does not appear on the home page when redirected
   } catch (error) {
@@ -228,14 +229,14 @@ export async function upvoteQuestion(params: QuestionVoteParams) {
 
     // Increment the author's reputation by +1 for upvoting, -1 for removing his upvote from a question
     await User.findByIdAndUpdate(userId, {
-      $inc: {reputation: hasupVoted ? -1 : 1}
-    })
+      $inc: { reputation: hasupVoted ? -1 : 1 },
+    });
 
     // Increment the author's reputation by +10 for receiving an upvote, and -10 for receiving a downvote
 
     await User.findByIdAndUpdate(question.author, {
-      $inc: {reputation: hasupVoted ? -10 : 10}
-    })
+      $inc: { reputation: hasupVoted ? -10 : 10 },
+    });
 
     revalidatePath(path);
   } catch (error) {
@@ -276,15 +277,15 @@ export async function downvoteQuestion(params: QuestionVoteParams) {
       throw new Error("Question not found!!");
     }
 
-          // Reduce the author's reputation by -1 for downvoting, +1 for removing his downvote from a question
-          await User.findByIdAndUpdate(userId, {
-            $inc: { reputation: hasdownVoted ? -2 : 2 },
-          });
-      
-          // Reduce the author's reputation by -10 for receiving a downvote, and +10 for receiving an upvote
-          await User.findByIdAndUpdate(question.author, {
-            $inc: { reputation: hasdownVoted ? -10 : 10 },
-          });
+    // Reduce the author's reputation by -1 for downvoting, +1 for removing his downvote from a question
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasdownVoted ? -2 : 2 },
+    });
+
+    // Reduce the author's reputation by -10 for receiving a downvote, and +10 for receiving an upvote
+    await User.findByIdAndUpdate(question.author, {
+      $inc: { reputation: hasdownVoted ? -10 : 10 },
+    });
 
     revalidatePath(path);
   } catch (error) {
@@ -358,6 +359,77 @@ export async function getHotQuestions() {
     // so we went to question model, got all questions, and sorted it in descending order of views and upvotes and kept the limit to 5
     return hotQuestions;
     // go back to rightSideBar.tsx
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getRecommendedQuestions(params: RecommendedParams) {
+  try {
+    connectToDatabase();
+
+    const { userId, page = 1, pageSize = 6, searchQuery } = params;
+
+    // find user
+    const user = await User.findOne({ clerkId: userId });
+
+    if (!user) {
+      throw new Error("user not found");
+    }
+
+    const skipAmount = (page - 1) * pageSize;
+
+    // find the user's interactions
+    const userInteractions = await Interaction.find({ user: user._id })
+      .populate("tags")
+      .exec();
+
+    // Extract tags from user's interactions
+    const userTags = userInteractions.reduce((tags, interaction) => {
+      if (interaction.tags) {
+        tags = tags.concat(interaction.tags);
+      }
+      return tags;
+    }, []);
+
+    // Get distinct tag IDs from user's interactions
+    const distinctUserTagIds = [
+      // @ts-ignore
+      ...new Set(userTags.map((tag: any) => tag._id)),
+    ];
+
+    const query: FilterQuery<typeof Question> = {
+      $and: [
+        { tags: { $in: distinctUserTagIds } }, // Questions with user's tags
+        { author: { $ne: user._id } }, // Exclude user's own questions
+      ],
+    };
+
+    if (searchQuery) {
+      query.$or = [
+        { title: { $regex: searchQuery, $options: "i" } },
+        { content: { $regex: searchQuery, $options: "i" } },
+      ];
+    }
+
+    const totalQuestions = await Question.countDocuments(query);
+
+    const recommendedQuestions = await Question.find(query)
+      .populate({
+        path: "tags",
+        model: Tag,
+      })
+      .populate({
+        path: "author",
+        model: User,
+      })
+      .skip(skipAmount)
+      .limit(pageSize);
+
+    const isNext = totalQuestions > skipAmount + recommendedQuestions.length;
+
+    return { questions: recommendedQuestions, isNext };
   } catch (error) {
     console.log(error);
     throw error;

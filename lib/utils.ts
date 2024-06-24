@@ -215,3 +215,39 @@ export const assignBadges = (params: BadgeParam) => {
 
   return badgeCounts;
 };
+
+// This function does the job of checking if the titles are meaningful or not. If input title is undefined or null, it returns 'No Job title'.
+// It splits the title into words and filters out unwanted words (undefined, null, 'undefined', 'null')
+// And it joins valid words to create the processed title
+
+export function processJobTitle(title: string | undefined | null): string {
+  // check if title is undefined or null
+  
+  if(title === undefined || title === null) {
+    return 'No Job Title';
+  }
+
+  // Split the title into words
+  const words = title.split(' ');
+
+  // filter out undefined, null and other unwanted words
+  const validWords = words.filter((word) => {
+    return (
+      word !== undefined && 
+      word !== null &&
+      word.toLowerCase() !== 'undefined' &&
+      word.toLowerCase() !== 'null'
+    );
+  });
+
+  // If no valid words left, return the general title
+  if(validWords.length === 0) {
+    return 'No Job Title';
+  }
+
+  // Join the valid words to create the processed title
+  const processedTitle = validWords.join(' ');
+
+  return processedTitle;
+
+}

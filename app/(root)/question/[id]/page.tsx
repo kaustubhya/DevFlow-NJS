@@ -12,7 +12,7 @@ import Link from "next/link";
 import React from "react";
 import Voting from "@/components/shared/Votes";
 
-const Page = async ({ params, searchParams }) => {
+const Page = async ({ params, searchParams }: any) => {
   // to get author's access in our Answer.tsx component, we can get author / userId from clerk
   const { userId: clerkId } = auth();
 

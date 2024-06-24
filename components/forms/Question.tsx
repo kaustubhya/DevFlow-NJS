@@ -65,7 +65,7 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
   const parsedQuestionDetails = questionDetails && JSON.parse(questionDetails || '');
 
   // Now for tags, we want it to be implemented in such a way so that the input tag field is not populated but rather the fields below it is populated
-  const groupedTags = parsedQuestionDetails?.tags.map((tag) => tag.name);
+  const groupedTags = parsedQuestionDetails?.tags.map((tag : any) => tag.name);
 
   // We will pull the below 2 functions into our questions component which is already existing
   // 1. Define your form., importing the formSchema aka QuestionsSchema

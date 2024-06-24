@@ -1457,3 +1457,25 @@ And then the collections, profile, tags, tag details page
 Finally doing the toasts, use the toaster component of Shadcn for this purpose.
 
 Go to app > (root) > layout.tsx for this
+
+---
+
+For Jobs, I added a key in the .env file for rapid api key, also made the job.action.ts folder, jobCard component, jobFilters component, a function to fetch jobs in utils.ts, and a loader + layout page
+
+---
+
+Fixing Bugs
+
+For Recommended questions: devflow\lib\actions\question.action.ts > getRecommendedQuestions
+
+then go to: app > (root) > (home) > page.tsx
+
+---
+
+Now we will update our packages, for this we will use an npm package called "npm-check-updates"
+
+`npm install -g npm-check-updates`
+
+To run it: type `ncu`
+
+To update packages, do `ncu -u` then `npm install`

@@ -41,7 +41,7 @@ const ParseHTML = ({ data }: Props) => {
     // Also since we are using useEffect, we need to import "use client" on top
   }, []);
   return (
-    <div>
+    <div className={'markdown w-full min-w-full'}>
       {parse(data)}
       {/* Here we use the parse from html-react-parser to parse the data (code data from prism) that we use in the question > [id] > page.tsx */}
     </div>

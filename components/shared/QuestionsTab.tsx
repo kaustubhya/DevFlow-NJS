@@ -24,7 +24,7 @@ const QuestionsTab = async ({ searchParams, userId, clerkId }: Props) => {
           key={question._id}
           // Since the key is not getting passed, let us pass the IDs too!
           _id={question._id}
-          clerkId={clerkId}
+          clerkId={clerkId !== null ? clerkId : undefined}
           title={question.title}
           tags={question.tags}
           author={question.author}

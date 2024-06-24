@@ -2,7 +2,6 @@ import QuestionCard from "@/components/cards/QuestionCard";
 import NoResult from "@/components/shared/NoResult";
 import Pagination from "@/components/shared/Pagination";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
-import { IQuestion } from "@/database/question.model";
 import { getQuestionByTagId } from "@/lib/actions/tag.action";
 import { URLProps } from "@/types";
 import React from "react";
@@ -43,7 +42,7 @@ const Page = async ({ params, searchParams }: URLProps) => {
         {result.questions.length > 0 ? (
           result.questions.map(
             (
-              question: IQuestion // IQuestion will tell us what our question contains
+              question: any // IQuestion will tell us what our question contains
             ) => (
               <QuestionCard
                 key={question._id}
